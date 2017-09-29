@@ -48,8 +48,11 @@ void TreeItemWidget::changBtnStyle(QString &str)
 {
    btn->setText(str);
 }
+
 void TreeItemWidget::btnClicked()
 {
+
+
     emit btnClickedtimes(ID);
     if(canadd)
     {
@@ -313,13 +316,20 @@ void qFlashTreeBase::addDiffSoundChild(QTreeWidgetItem *fatherItem,const diffSou
     item->setText(0,Data.m_strSoundName);
     item->setSizeHint(0,QSize(9000,35));
     TreeItemWidget *ItemWidget=new TreeItemWidget(this,TreeItemWidget::DiffSoundWidget);
+
     Treewidget_map.insert(Data.m_strId,ItemWidget);
+
     ItemWidget->setBtnData(Data.m_strId);
+
     this->setItemWidget(item,0,ItemWidget);
+
     connect(ItemWidget,SIGNAL(btnClickedtimes(QString &)),this,SLOT(DiffSoundItemClicked(QString &)));
+
     connect(this,SIGNAL(DiffSoundFull(bool)),ItemWidget,SLOT(DiffSoundFull(bool)));
+
     DiffSoundTreewidget_map.insert(ItemWidget->ID,Data);
 }
+
 void qFlashTreeBase::DiffSoundItemClicked(QString &ID)
 {
     diffSound diffsound= DiffSoundTreewidget_map.find(ID).value();
@@ -330,7 +340,12 @@ void qFlashTreeBase::DiffSoundItemClicked(QString &ID)
         return;
     }
     emit DiffSound(diffsound);
+
     items++;
+}
+void qFlashTreeBase::AllTeachDiffItemClicked(QString &ID)
+{
+  Treewidget_map.find(ID).value()->btnClicked();
 }
 void qFlashTreeBase::restoreTreeItemWidget(diffSound &Data)
 {
@@ -338,7 +353,12 @@ void qFlashTreeBase::restoreTreeItemWidget(diffSound &Data)
     emit DiffSoundFull(true);
     Treewidget_map.find(Data.m_strId).value()->restoreBtn();
 }
-
+void qFlashTreeBase::restoreTreeItemWidget1(QString &index)
+{
+    items--;
+    emit DiffSoundFull(true);
+    Treewidget_map.find(index).value()->restoreBtn();
+}
 //-------------------课件相关接口
 void qFlashTreeBase::StartGetLocalCouseWare()
 {
@@ -446,7 +466,7 @@ void qFlashTreeBase::SetCustomcoursewareTree(CourseWareType type)
 {
    if(lstUserCourseware.size()==0)
    {
-        qDebug()<<"No CutomCouserware";
+        qDebug()<<__FUNCTION__<<"No CutomCouserware";
         return;
    }
    QTreeWidgetItem *Customcourseware=new QTreeWidgetItem(this);

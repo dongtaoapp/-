@@ -39,15 +39,19 @@ public slots:
 
     void onUdpSocket();
 signals:
+    void startAllTeach(bool);
+    void AllTeachAction(QString &action);
+    void AllTeachActionDiffItem(QString &);
+    void AllTeachActionDiffItemDelete(QString &);
+    void AllTeachActionDiffItemlOAD();
     void CONNECTEDSUCCESS();
-
+    void DISSCONNECTED();
 
     void signal_switch_flash(QString);
     void signal_control_talk(bool talk);
     void signal_start_train(bool,int);//第一个参数事是否训练 第二个事训练ID
     void signal_exam(bool,int);//第一个参数事是否考试 第二个参数事考试ID
     void signal_auscultar(bool);
-    void signal_string(QString &);
     void signal_error(QString);
     void signal_socket_state(net_client_state);
 private:

@@ -64,6 +64,7 @@ void net_client::onconnected()
 void net_client::ondisconnected()
 {
     qDebug()<<__FUNCTION__;
+    emit DISSCONNECTED();
     emit signal_socket_state(net_client_state::UNCONNECTED);
 }
 
@@ -128,6 +129,31 @@ void net_client::manager_msg(QByteArray &recv)
          QString type=object.value("Type").toString();
          bool cmd=object.value("cmd").toBool();
          QString data=object.value("data").toString();
+         if(type==QString("Synchronocus"))
+         {
+             if(object.value("cmd").toString()==QString("control"))
+             {
+                emit startAllTeach(object.value("data").toBool());
+             }
+             if(object.value("cmd").toString()==QString("action"))
+             {
+                emit AllTeachAction(data);
+             }
+             if(object.value("cmd").toString()==QString("actionDiffItem"))
+             {
+                 emit AllTeachActionDiffItem(data);
+             }
+             if(object.value("cmd").toString()==QString("actionDiffItemDelete"))
+             {
+                 emit AllTeachActionDiffItemDelete(data);
+             }
+             if(object.value("cmd").toString()==QString("LoadSound"))
+             {
+
+                 emit AllTeachActionDiffItemlOAD();
+             }
+
+         }
          if(type==QString("flash"))
          {
             emit signal_switch_flash(data);
@@ -139,7 +165,7 @@ void net_client::manager_msg(QByteArray &recv)
             emit signal_control_talk(cmd);
             return;
           }
-           else if (type==QString("exam"))
+         if (type==QString("exam"))
           {
              bool ok;
              int examid= data.toInt(&ok);
@@ -147,7 +173,7 @@ void net_client::manager_msg(QByteArray &recv)
              qDebug()<<cmd<<examid;
              return;
           }
-         else if(type==QString("train"))
+         if(type==QString("train"))
          {
              bool ok;
              int trainid=data.toInt(&ok);
@@ -155,29 +181,27 @@ void net_client::manager_msg(QByteArray &recv)
              qDebug()<<cmd<<trainid;
              return;
           }
-         else if(type==QString("auscultar"))
+         if(type==QString("auscultar"))
          {
             emit signal_auscultar(cmd);
              return;
          }
-         else if(type==QString("closePC"))
+         if(type==QString("closePC"))
          {        
             shutdown();
              return;
          }
-         else if(type==QString("string"))
+         if(type==QString("string"))
          {
-            emit signal_string(data);
-
-            if(data=="CLIENTCONNECTEDSUCCESS")
+            if(object.value("cmd").toString()==QString("NULL"))
             {
-                qDebug()<<__FUNCTION__<<"data"<<data;
-               net_client_socket->write(TellServerDeskID());
-               QMessageBox::information(NULL,QStringLiteral("连接提示"),QStringLiteral("连接教师机成功"),QMessageBox::Yes);
-               emit CONNECTEDSUCCESS();
-
-
-               return;
+                if(data=="CLIENTCONNECTEDSUCCESS")
+                {
+                    net_client_socket->write(TellServerDeskID());
+                    QMessageBox::information(NULL,QStringLiteral("连接提示"),QStringLiteral("连接教师机成功"),QMessageBox::Yes);
+                    emit CONNECTEDSUCCESS();
+                    return;
+                }
             }
          }
     }
@@ -189,6 +213,7 @@ void net_client::manager_msg(QByteArray &recv)
 /***********连接错误信息***********/
 void net_client::error(QAbstractSocket::SocketError errorstring)
 {
+    Q_UNUSED(errorstring);
 #if 0
    if(errorstring==QAbstractSocket::ConnectionRefusedError)
    {
@@ -203,7 +228,7 @@ void net_client::error(QAbstractSocket::SocketError errorstring)
        emit signal_socket_state(net_client_state::UNKNOWNERROR);
    }
 #endif
-   QMessageBox::information(NULL,QStringLiteral("连接提示"),QStringLiteral("连接教师机失败，确认教师机是否已经打开"),QMessageBox::Yes);
+   QMessageBox::information(NULL,QStringLiteral("信息提示"),QStringLiteral("连接教师机失败"),QMessageBox::Yes);
 }
 
 void net_client::shutdown()

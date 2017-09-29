@@ -60,11 +60,12 @@ void QCompareView::onUiCompareBtn()
 
 void QCompareView::onUideleteBtnFirst()
 {
+
     if(!ui->label_first->text().isEmpty())
     {
         ui->label_first->clear();
         m_soundNum--;
-        emit deleteDiffSound(labelData1);
+        emit deleteDiffSound1(labelData1);
     }
 }
 void QCompareView::onUideleteBtnSecond()
@@ -73,7 +74,7 @@ void QCompareView::onUideleteBtnSecond()
     {
         ui->label_second->clear();
         m_soundNum--;
-        emit deleteDiffSound(labelData2);
+        emit deleteDiffSound2(labelData2);
     }
 }
 void QCompareView::onUiemityBtn()
@@ -82,13 +83,13 @@ void QCompareView::onUiemityBtn()
     {
         m_soundNum--;
         ui->label_first->clear();
-        emit deleteDiffSound(labelData1);
+        emit deleteDiffSound1(labelData1);
     }
     if(!ui->label_second->text().isEmpty())
     {
         ui->label_second->clear();
         m_soundNum--;
-        emit deleteDiffSound(labelData2);
+        emit deleteDiffSound2(labelData2);
     }
 }
 void QCompareView::widgetinit()

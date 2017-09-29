@@ -4,7 +4,6 @@
 #include <QWidget>
 #include <QMouseEvent>
 #include "main_tab.h"
-#include "talkbackview.h"
 #include "qcompareview.h"
 #include "qchosecurriculumview.h"
 #include "qtouchtrainview.h"
@@ -81,6 +80,7 @@ public slots:
 
       void  GetDiffData();
       void  GetCustomWare();
+      void  m_show();
 
       void CouseWareTreeWidgetInit(QByteArray &Data);//自定义课件
       void DiffTreeWidgetInit(QByteArray &data);//鉴别听诊
@@ -97,9 +97,7 @@ public slots:
       void ontalkbtn();
       void onTabBtnClicked(int index);//tab控件点击事件
 
-       void ClassScheduleInit();//课程表界面开始界面
-      void setCurriculumID(ClassScheduleData &Data);//设置课程ID
-//      void set
+
       void OnFlashItemData(QCoursewareInfo &info);//获得Tree   本地Item data
       void OnwebItemData(userCourseware &info);//获得 Ttee  自定义Item data
       void OnCaseItemData(stardardCase &Case);//获取 Tree 病例Item data
@@ -107,22 +105,10 @@ public slots:
       void doSearchWork(QString &str);
 
 
-      void doChangTalkBntIcon();
-      void doRequest(int deskID,int State);
-      void doSwitchBtnClicked(bool checked);
 
-    //  void onSysCilecked(int index);//系统设置控件点击事件
+      void CompareItem1(diffSound &data);
+      void CompareItem2(diffSound &data);
 
-
-//      void onSysBtn();
-
-      void doLoginsuccess(QString &name,QString &avatar);
-
-
-//    void onTeachbtn();
-//    void onListenbtn();
- //    void onspeakbtn();
-//    void onBordbtn();
       //初始化声音控制
       void InitSoundControl();
       //扩音听诊
@@ -133,18 +119,16 @@ public slots:
       void OnSoundSimular();
       //触诊训练
       void PalpationTraining(QString &text,int index);
-      //
-//      void onShow();m_lstUserCourseware
-      //获取自定义课件，标准化病例，鉴别听诊完成
-//      void finishGetTreecontent();
-      //
-  //    void resetGetTreecontent();
+
       //开始鉴别听诊
       void  StartCompareSound(diffSound &data1,diffSound &data2);
 
-//signals:
-
-//        void StartDownLoadFileData(QString &,const QString);
+      void AllTeachInit(bool cmd);
+      void AllTeachAction(QString &action);
+      void ALLTeachActionDiffItem(QString &ID);
+      void ALLTeachActionDiffItemDelete(QString &index);
+      void ALLTeachActionLOAD();
+      void dissconnectedFromTeachComputer();
 private:
     Ui::QTrainMainWindow *ui;
     QLabel *top_label;
@@ -163,7 +147,6 @@ private:
     QPushButton *m_close_btn;
     QPushButton *m_min_btn;
     QPushButton *sysTemBtn;
-    QPushButton *sheduleBtn;
     QPushButton *play_btn;
     QPushButton *listen_btn;
     QPushButton *speak_btn;
@@ -180,7 +163,6 @@ private:
 
     QStackedWidget *stacked_tree;
     QCompareView *compareview;
-    QChoseCurriculumView *sheduleView;
     QTouchTrainView *touchTrain;
 
     QSetSystemView *systemView;
@@ -197,6 +179,7 @@ private:
     QMessageBox *TipBox;
     QString webIP;
     bool isloadflash;
+    bool Synchronous;//同步教学状态标识
 protected:
     QSerialPort*            m_pSerialPort;      //串口插件
     int                     m_nState;           //状态: 0:暂停;1:播发课件;2:模拟听诊;3:扩音听诊

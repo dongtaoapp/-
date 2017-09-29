@@ -33,7 +33,8 @@ public slots:
 signals:
     void CompareBntCilcked(diffSound&,diffSound&);
 
-    void deleteDiffSound(diffSound &);
+    void deleteDiffSound1(diffSound &);
+    void deleteDiffSound2(diffSound &);
 protected:
     void paintEvent(QPaintEvent *event);
 

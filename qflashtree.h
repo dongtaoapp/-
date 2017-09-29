@@ -85,12 +85,15 @@ signals:
     void FlahsItemData(QCoursewareInfo &info);//本地flash Item信息
     void webItemData(userCourseware &);//自定义 课件Item 信息
     void CaseItemData(stardardCase &);//病例 Item 信息
+
     void DiffSound(diffSound &);
+
     void readJsonFileFinsh();
     void DiffSoundFull(bool);
     void m_test();
 public slots:
     void restoreTreeItemWidget(diffSound &Data);
+    void restoreTreeItemWidget1(QString &index);
     void OnTreeCtrlScroll(int n);
     void doItemClicked(QTreeWidgetItem* item,int colum);
     //---------------------------课件相关接口
@@ -109,6 +112,8 @@ public slots:
     void GetDiffSoundData(QByteArray &Data);
     void DiffSoundItemClicked(QString &ID);
     void addDiffSoundChild(QTreeWidgetItem *fatherItem ,const diffSound &Data);
+
+    void AllTeachDiffItemClicked(QString &ID);
 public:
     //------------------课件相关变量
     QMap<QString,QCoursewareInfo> CourseWareHL_map; //心肺

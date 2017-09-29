@@ -19,7 +19,13 @@ public:
     void RequestTalk();
 public slots:
     void managerListen();
-
+signals:
+    void startAllteacher(bool);
+    void AllTeachAction(QString &);
+    void AllTeachActionDiffItem(QString &);
+    void AllTeachActionDiffItemDelete(QString &);
+    void ALLTeachActionLoad();
+    void dissconnecteed();
 private:
     net_client m_client;
     listen m_listen;

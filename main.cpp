@@ -29,7 +29,12 @@ int main(int argc, char *argv[])
     qDebug()<<"main thread"<<QThread::currentThreadId();
     QTrainMainWindow w;
     w.GetDiffData();
-    w.ClassScheduleInit();
+//    w.show();
+    w.m_show();
+//    w.AllTeachInit(false);
+
+#if 0
+//    w.ClassScheduleInit();
 //    w.show();
 //    w.InitSoundControl();
 
@@ -51,7 +56,7 @@ int main(int argc, char *argv[])
 //    QObject::connect(&Ch,SIGNAL(CLNum(QString&)),&w,SLOT(setCurriculumID(QString&)));
 //    QObject::connect(t,SIGNAL(dologinSuccess(QString&,QString&)),&w,SLOT(InitSoundControl()));
 //    QObject::connect(&Ch,SIGNAL(CLNum(QString &)),&w,SLOT(show()));
-
+#endif
 
     return a.exec();
 }

@@ -29,7 +29,6 @@ SOURCES += main.cpp\
     case_widget.cpp \
     courseware_widget.cpp \
     main_tab.cpp \
-    talkbackview.cpp \
     loginbackgroundform.cpp \
     loginform.cpp \
     qchosecurriculumview.cpp \
@@ -39,7 +38,6 @@ SOURCES += main.cpp\
     qtouchtrainview.cpp \
     setitemview.cpp \
     qmanager.cpp \
-    tellclientconnected.cpp \
     m_ftp_manager.cpp \
     qdatabase.cpp \
     qcomorder.cpp \
@@ -67,7 +65,6 @@ HEADERS  += qtrainmainwindow.h \
     courseware_widget.h \
     define.h \
     main_tab.h \
-    talkbackview.h \
     loginbackgroundform.h \
     loginform.h \
     qchosecurriculumview.h \
@@ -77,7 +74,6 @@ HEADERS  += qtrainmainwindow.h \
     qtouchtrainview.h \
     setitemview.h \
     qmanager.h \
-    tellclientconnected.h \
     m_ftp_manager.h \
     qdatabase.h \
     globalcommon.h \
