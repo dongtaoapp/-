@@ -33,7 +33,6 @@ void TreeItemWidget::setTreeItemWidgetType(TreeItemWidgetType type)
     {
         this->resize(245,35);
         btn=new QPushButton(this);
-        btn->setFocusPolicy(Qt::NoFocus);
         btn->setGeometry(180,2,48,32);
         btn->setStyleSheet(QString("QPushButton{image:url(:/images/identify.png)}"
                                    "QPushButton:hover{image:url(:/images/identify_hover.png)}"));
@@ -213,7 +212,7 @@ void qFlashTreeBase::setCaseTree(CaseType type)
 }
 void qFlashTreeBase::addCaseChildItem(QString &Type,stardardCase &Case)
 {
-    QTreeWidgetItem *item;
+    QTreeWidgetItem *item=Q_NULLPTR;
     if(Type==QString("0"))//儿童
     {
         item=new QTreeWidgetItem(child);
@@ -233,7 +232,12 @@ void qFlashTreeBase::addCaseChildItem(QString &Type,stardardCase &Case)
     item->setText(0,Case.m_strName);
     TreeItemWidget *ItemWidget=new TreeItemWidget(this,TreeItemWidget::CaseWidget);
     this->setItemWidget(item,1,ItemWidget);
+    caseItem_map.insert(Case.m_strCaseId.toInt(),item);
     TreeItemWidget_map.insert(item->text(0),ItemWidget);
+}
+QTreeWidgetItem *qFlashTreeBase::GetCaseItem(int index)
+{
+    return caseItem_map.find(index).value();
 }
 
 //------------------鉴别听诊相关接口
@@ -406,7 +410,7 @@ void qFlashTreeBase::setCouseWare(CourseWareType type)
 }
 void qFlashTreeBase::constructionCouseWareTree(QMapIterator<QString, QCoursewareInfo> &map)
 {
-   QMap<QString,QTreeWidgetItem*> Item_map;//存储父节点
+//   QMap<QString,QTreeWidgetItem*> Item_map;//存储父节点
     while (map.hasNext())
     {
         map.next();
@@ -538,15 +542,19 @@ void qFlashTreeBase::SetCustomcoursewareTree(CourseWareType type)
 
    }
 }
+QTreeWidgetItem* qFlashTreeBase::GetItem(QString &key)
+{
+     return Item_map.find(key).value();
+}
 void qFlashTreeBase::CouseWareStyleSheet()
 {
     this->setStyleSheet(QString("QTreeView::branch:has-siblings:!adjoins-item{border-image: url(:/images/vline.png) 0;}"
-                                "QTreeView::branch:has-siblings:adjoins-item {border-image: url(:/images/branch-more.png) 0;}"
-                                "QTreeView::branch:!has-children:!has-siblings:adjoins-item {border-image: url(:/images/branch-end.png) 0;}"
-                                "QTreeView::branch:has-children:!has-siblings:closed,QTreeView::branch:closed:has-children:has-siblings {border-image: none;image: url(:/images/branch-closed.png);}"
-                                "QTreeView::branch:open:has-children:!has-siblings,QTreeView::branch:open:has-children:has-siblings  {border-image: none;image: url(:/images/branch-open.png);}"
-                                "QTreeView::item:hover{background-color:#4aabe9;}"
-                                "QTreeView::item{margin-top:5px;}"));
+                                   "QTreeView::branch:has-siblings:adjoins-item {border-image: url(:/images/branch-more.png) 0;}"
+                                   "QTreeView::branch:!has-children:!has-siblings:adjoins-item {border-image: url(:/images/branch-end.png) 0;}"
+                                   "QTreeView::branch:has-children:!has-siblings:closed,QTreeView::branch:closed:has-children:has-siblings {border-image: none;image: url(:/images/coursewarelist_more_button.png);}"
+                                   "QTreeView::branch:open:has-children:!has-siblings,QTreeView::branch:open:has-children:has-siblings  {border-image: none;image: url(:/images/coursewarelistm_retract_button.png);}"
+                                   "QTreeView::item:hover{background-color:#4aabe9;}"
+                                   "QTreeView::item{margin-top:5px;}"));
 }
 
 //------------------Item点击槽函数
@@ -594,14 +602,14 @@ void qFlashTreeBase::doItemClicked(QTreeWidgetItem *item, int colum)
                    iter.value()->changStyle(QString(""));
                    iter.value()->Casecolum0Clicked=false;
                 }
-              widget->changStyle(QString("QLabel{border-style:solid;border:1px solid black}"));
+                widget->changStyle(QString("QLabel{border-style:solid;border:1px solid #999999;border-radius:4px}"));
               widget->Casecolum0Clicked=true;
             }
             if(colum==1)
             {
                 if(widget->Casecolum0Clicked)
                 {
-                    widget->changStyle(QString("QLabel{border-style:solid;border:1px solid black;background-color:red}"));
+                    widget->changStyle(QString("QLabel{border-style:solid;border:1px solid #999999;background-color:#3099e5;border-radius:4px}"));
                     //病例Itme信号 TODO
 
                    emit CaseItemData(item->data(0,Qt::UserRole).value<stardardCase>());//发送Item 点击信息

@@ -35,11 +35,11 @@ QPushButton:focus{
      <x>127</x>
      <y>0</y>
      <width>311</width>
-     <height>221</height>
+     <height>211</height>
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>3</number>
    </property>
    <widget class="QWidget" name="page">
     <widget class="QGroupBox" name="groupBox_2">
@@ -234,6 +234,36 @@ font-size:18px;</string>
      </property>
     </widget>
    </widget>
+   <widget class="QWidget" name="page_5">
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>60</y>
+       <width>261</width>
+       <height>111</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>系统串口列表</string>
+     </property>
+     <widget class="QComboBox" name="comBoxComPort">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>50</y>
+        <width>171</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">font-size:18px;
+border-style:solid;
+border:1px solid black;</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
    <widget class="QWidget" name="page_2"/>
   </widget>
   <widget class="QPushButton" name="okBtn">
@@ -298,7 +328,7 @@ border-right:1px solid #ebedee</string>
     <property name="geometry">
      <rect>
       <x>-1</x>
-      <y>3</y>
+      <y>0</y>
       <width>111</width>
       <height>23</height>
      </rect>
@@ -311,7 +341,7 @@ border-right:1px solid #ebedee</string>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>70</y>
+      <y>50</y>
       <width>111</width>
       <height>23</height>
      </rect>
@@ -324,13 +354,26 @@ border-right:1px solid #ebedee</string>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>150</y>
+      <y>110</y>
       <width>111</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>系统设置</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn4">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>160</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>选择串口</string>
     </property>
    </widget>
   </widget>

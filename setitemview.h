@@ -16,13 +16,15 @@ public:
     explicit SetItemView(QWidget *parent = 0);
     ~SetItemView();
     void Init();
-
+    void btnInit();
     void radioButtonInit();
 
+    void SerialPortInit();
 public slots:
     void onBtn1();
     void onBtn2();
     void onBtn3();
+    void onBtn4();
     void onOkbtn();
     void oncancelBtn();
 signals:

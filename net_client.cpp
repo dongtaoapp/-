@@ -29,7 +29,7 @@ net_client::net_client(QObject *parent) :
 
 net_client::~net_client()
 {
-
+   net_client_socket->abort();
    net_client_socket->deleteLater();
 
    udpsocket->deleteLater();
@@ -41,8 +41,6 @@ net_client::~net_client()
 
 void net_client::onUdpSocket()
 {
-    qDebug()<<__FUNCTION__;
-
     QSettings *readconfig=new QSettings(APPPATH,QSettings::IniFormat);
     readconfig->value("Client/ServerIP").toString();
     connect_to_server(readconfig->value("Client/ServerIP").toString(),666666);
@@ -58,23 +56,19 @@ void net_client::connect_to_server(QString ip, qint16 port)
 
 void net_client::onconnected()
 {
-    qDebug()<<__FUNCTION__;
     emit signal_socket_state(net_client_state::CONNECTED);
 }
 void net_client::ondisconnected()
 {
-    qDebug()<<__FUNCTION__;
     emit DISSCONNECTED();
-    emit signal_socket_state(net_client_state::UNCONNECTED);
+    net_client_socket->abort();
 }
 
 void net_client::send_msg(QByteArray &msg)
 {
   net_client_socket->write(msg);
 }
-/*
- * 接收信息
- */
+/** 接收信息*/
 void net_client::recv_msg()
 {
   QByteArray recvbytes=net_client_socket->readAll();
@@ -85,9 +79,6 @@ void net_client::recv_msg()
   }
   manager_msg(recvbytes);
 }
-/**json格式***[type: cmd: data:]***type: flash  talk exam train auscultar closePC string play*****/
-
-/***********解析教师机的json字符串 并发出相关的信号**********/
 
 QByteArray net_client::TellServerDeskID()
 {
@@ -109,12 +100,15 @@ QByteArray net_client::TellServerDeskID()
     return str;
 
 }
+
+/***********解析教师机的json字符串 并发出相关的信号**********/
+
 void net_client::manager_msg(QByteArray &recv)
 {
-  if(recv.isEmpty())
-  {
+    if(recv.isEmpty())
+    {
       return ;
-  }
+    }
     QJsonParseError simp_json_error;
 
     QJsonDocument jdocument =QJsonDocument::fromJson(recv,&simp_json_error);
@@ -127,64 +121,73 @@ void net_client::manager_msg(QByteArray &recv)
             return;
         }
          QString type=object.value("Type").toString();
-         bool cmd=object.value("cmd").toBool();
+         QString cmd=object.value("cmd").toString();
          QString data=object.value("data").toString();
          if(type==QString("Synchronocus"))
          {
-             if(object.value("cmd").toString()==QString("control"))
+             if(cmd==QString("control"))
              {
                 emit startAllTeach(object.value("data").toBool());
+                return;
              }
-             if(object.value("cmd").toString()==QString("action"))
+             if(cmd==QString("action"))
              {
-                emit AllTeachAction(data);
+                emit AllTeachActionBtn(data);
+                return;
              }
-             if(object.value("cmd").toString()==QString("actionDiffItem"))
+             if(cmd==QString("Tab"))
+             {
+                 int Tab=object.value("data").toInt();
+                 emit AllTeachActionTab(Tab);
+                 return;
+             }
+             if(cmd==QString("actionDiffItem"))
              {
                  emit AllTeachActionDiffItem(data);
+                   return;
              }
-             if(object.value("cmd").toString()==QString("actionDiffItemDelete"))
+             if(cmd==QString("actionDiffItemDelete"))
              {
                  emit AllTeachActionDiffItemDelete(data);
+                   return;
              }
-             if(object.value("cmd").toString()==QString("LoadSound"))
+             if(cmd==QString("LoadSound"))
              {
-
                  emit AllTeachActionDiffItemlOAD();
+                   return;
              }
 
          }
          if(type==QString("flash"))
          {
-            emit signal_switch_flash(data);
-            qDebug()<<__FUNCTION__<<data;
-            return;
+            if(cmd==QString("LOCALFlash"))
+            {
+                emit ALLTeachLocalFlash(data);
+                  return;
+            }
+            if(cmd==QString("LOCALCase"))
+            {
+                emit ALLTeachLocalCase(data);
+                  return;
+            }
          }
-         if(type==QString("talk"))
+         if(type==QString("WORK"))
          {
-            emit signal_control_talk(cmd);
-            return;
-          }
-         if (type==QString("exam"))
-          {
-             bool ok;
-             int examid= data.toInt(&ok);
-             emit signal_exam(cmd,examid);
-             qDebug()<<cmd<<examid;
-             return;
-          }
-         if(type==QString("train"))
-         {
-             bool ok;
-             int trainid=data.toInt(&ok);
-             emit signal_start_train(cmd,trainid);
-             qDebug()<<cmd<<trainid;
-             return;
-          }
-         if(type==QString("auscultar"))
-         {
-            emit signal_auscultar(cmd);
-             return;
+             if(cmd==QString("play"))
+             {
+                emit ALLTeachPlay();
+                return;
+             }
+             if(cmd==QString("auscultation"))//--------听诊
+             {
+                emit ALLTeachAuscultation();
+                   return;
+             }
+             if(cmd==QString("phonophoresis"))//扩音听诊
+             {
+                emit ALLTeachPhonophoresis();
+                return;
+             }
          }
          if(type==QString("closePC"))
          {        
@@ -204,10 +207,15 @@ void net_client::manager_msg(QByteArray &recv)
                 }
             }
          }
+         if(type==QString("talk"))
+         {
+//            bool cmd=object.value("cmd").toBool();
+            emit ALLTeachTalk(object.value("cmd").toBool());
+         }
     }
     else
     {
-        qDebug()<<simp_json_error.errorString();
+        qDebug()<<__FUNCTION__<<simp_json_error.errorString();
     }
 }
 /***********连接错误信息***********/

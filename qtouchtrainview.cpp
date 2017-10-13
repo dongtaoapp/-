@@ -128,7 +128,7 @@ void QTouchTrainView::actionInit()
 
     this->addSeparator();
 
-     sonMenuActionInit();
+    sonMenuActionInit();
     this->addMenu(sonMenu);
 
     actio27=new QAction(QStringLiteral("Èé·¿Òì³£°ü¿é"));

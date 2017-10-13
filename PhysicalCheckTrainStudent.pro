@@ -57,7 +57,8 @@ SOURCES += main.cpp\
     qparsecoursewarefileop.cpp \
     qparsecousewarefile.cpp \
     qsetsystemview.cpp \
-    net_client.cpp
+    net_client.cpp \
+    qpalpationpracticetip.cpp
 
 HEADERS  += qtrainmainwindow.h \
     auscultation_widget.h \
@@ -102,7 +103,8 @@ HEADERS  += qtrainmainwindow.h \
     qparsecoursewarefileop.h \
     qparsecousewarefile.h \
     qsetsystemview.h \
-    net_client.h
+    net_client.h \
+    qpalpationpracticetip.h
 
 FORMS    += qtrainmainwindow.ui \
     auscultation_widget.ui \
@@ -111,7 +113,8 @@ FORMS    += qtrainmainwindow.ui \
     qcompareview.ui \
     aboutform.ui \
     qsetsystemview.ui \
-    setitemview.ui
+    setitemview.ui \
+    qpalpationpracticetip.ui
 
 RESOURCES += \
     resource.qrc

@@ -14,24 +14,49 @@ QManager::QManager()
    delete readconfig;
    connect(&m_client,SIGNAL(CONNECTEDSUCCESS()),this,SLOT(managerListen()));
    connect(&m_client,SIGNAL(DISSCONNECTED()),this,SIGNAL(dissconnecteed()));
+
+   //---------------对讲信号槽
+   connect(this,SIGNAL(StartListen()),&m_listen,SLOT(start_system_audio()));
+
+   connect(&m_client,SIGNAL(ALLTeachTalk(bool)),this,SLOT(ControlTalk(bool)));
+   connect(this,SIGNAL(StarTalk()),&m_speak,SLOT(start_audio_to_system()));
+   connect(this,SIGNAL(StopTalk()),&m_speak,SLOT(stop_voice_in()));
+   //---------------同步教学信号槽
+//   connect(&m_client,SIGNAL(ALLTeachTalk(bool)),this,SLOT(ControlTalk(bool)));
    connect(&m_client,SIGNAL(startAllTeach(bool)),this,SIGNAL(startAllteacher(bool)));
-   connect(&m_client,SIGNAL(AllTeachAction(QString &)),this,SIGNAL(AllTeachAction(QString &)));
+   connect(&m_client,SIGNAL(AllTeachActionTab(int )),this,SIGNAL(AllTeachActionTab(int )));
+   connect(&m_client,SIGNAL(AllTeachActionBtn(QString &)),this,SIGNAL(AllTeachActionBtn(QString &)));
    connect(&m_client,SIGNAL(AllTeachActionDiffItem(QString&)),this,SIGNAL(AllTeachActionDiffItem(QString&)));
    connect(&m_client,SIGNAL(AllTeachActionDiffItemDelete(QString&)),this,SIGNAL(AllTeachActionDiffItemDelete(QString&)));
-    connect(&m_client,SIGNAL(AllTeachActionDiffItemlOAD()),this,SIGNAL(ALLTeachActionLoad()));
+   connect(&m_client,SIGNAL(AllTeachActionDiffItemlOAD()),this,SIGNAL(ALLTeachActionLoad()));
+   connect(&m_client,SIGNAL(ALLTeachLocalFlash(QString &)),this,SIGNAL(ALLTeachLocalFlash(QString&)));
+   connect(&m_client,SIGNAL(ALLTeachLocalCase(QString&)),this,SIGNAL(ALLTeachLocalCase(QString &)));
+   connect(&m_client,SIGNAL(ALLTeachPlay()),this,SIGNAL(ALLTeachPlay()));
+   connect(&m_client,SIGNAL(ALLTeachPhonophoresis()),this,SIGNAL(ALLTeachPhonophoresis()));
+   connect(&m_client,SIGNAL(ALLTeachAuscultation()),this,SIGNAL(ALLTeachAuscultation()));
 }
 QManager::~QManager()
 {
-    qDebug()<<__FUNCTION__;
 
 }
 
 void QManager::managerListen()
 {
-    m_listen.funbind(25000);
-    m_listen.start_system_audio();
+    emit StartListen();
 }
-
+void QManager::ControlTalk(bool cmd)
+{
+    qDebug()<<__FUNCTION__<<cmd;
+    if(cmd)
+    {
+        emit StarTalk();
+    }
+    if(!cmd)
+    {
+        emit StopTalk();
+    }
+    emit TalkState(cmd);
+}
 void QManager::RequestTalk()
 {
     QJsonDocument jdocument;

@@ -1,5 +1,6 @@
 #include "listen.h"
 #include "define.h"
+#include <qDebug>
 #pragma execution_character_set("utf-8")
 
 CG729Decoder::CG729Decoder()
@@ -21,34 +22,48 @@ void CG729Decoder::decode(unsigned char *src,short *dst,int bad_frame)
 {
     va_g729a_decoder(src, dst, bad_frame);
 }
+
 listen::listen()
 {
-      m_port=8080;
-      socket = new QUdpSocket(this);
-      connect(socket, SIGNAL(readyRead()),
-               this, SLOT(readyReadSlot()));
-       //设置声音格式
-       QAudioFormat format;
-       format.setSampleRate (8000);        //设置采样频率
-       format.setChannelCount (1);         //设置通道计数
-       format.setSampleSize (16);          //设置样本大小，一般为8或者16
-       format.setCodec ("audio/pcm");      //设置编码格式
-       format.setSampleType (QAudioFormat::SignedInt);   //设置采样类型
-       format.setByteOrder (QAudioFormat::LittleEndian); //设置字节序为小端字节序
-       output = new QAudioOutput(format, this);
-       outdevice=Q_NULLPTR;
-       connect(this,SIGNAL(signalrecvbytes(QByteArray&)),this,SLOT(star_listen(QByteArray &)));
+    m_thread.start();//线程开始
+
+    //设置声音格式
+    QAudioFormat format;
+    format.setSampleRate (8000);        //设置采样频率
+    format.setChannelCount (1);         //设置通道计数
+    format.setSampleSize (16);          //设置样本大小，一般为8或者16
+    format.setCodec ("audio/pcm");      //设置编码格式
+    format.setSampleType (QAudioFormat::SignedInt);   //设置采样类型
+    format.setByteOrder (QAudioFormat::LittleEndian); //设置字节序为小端字节序
+    socket = new QUdpSocket(this);
+    if(socket->bind(QHostAddress::AnyIPv4, 250000, QUdpSocket::ShareAddress))
+    {
+        //QHostAddress("224.1.1.3"), 250000
+        qDebug()<<socket->errorString();
+        socket->setSocketOption(QAbstractSocket::MulticastLoopbackOption, 0);
+        socket->joinMulticastGroup(QHostAddress("224.1.1.3"));//加入组播地址
+    }
+    connect(socket, SIGNAL(readyRead()),this, SLOT(readyReadSlot()));
+    output = new QAudioOutput(format);
+    outdevice=Q_NULLPTR;
+    this->moveToThread(&m_thread);//加入线程
 }
 
 listen::~listen()
 {
-   socket->deleteLater();
    output->deleteLater();
-   outdevice->deleteLater();
-   qDebug()<<__FUNCTION__;
+   if(outdevice!=Q_NULLPTR)
+   {
+        outdevice->deleteLater();
+   }
+
+   m_thread.requestInterruption();
+   m_thread.quit();
+   m_thread.wait();
 }
 bool listen::start_system_audio()
 {
+  qDebug()<<__FUNCTION__;
   if(outdevice!=Q_NULLPTR)
   {
         return false;
@@ -58,38 +73,18 @@ bool listen::start_system_audio()
 }
 void listen::stop_sys_audio()
 {
+    qDebug()<<__FUNCTION__;
     output->stop();
     outdevice=Q_NULLPTR;
 
 }
-/*
- * 绑定广播端口进行声音的采集
- */
-
-void listen::funbind(quint16 port)
-{
-    m_port=port;
-    if(socket->bind(m_port))
-    {
-        qDebug()<<__FUNCTION__<<"bind success";
-    }
-    else
-    {
-        qDebug()<<"bind port error"<<socket->errorString();
-        return;
-    }
-}
-
-/*
- * 对声音进行解码处理 并写入扬声器
- */
-
+/************对声音进行解码处理 并写入扬声器***************/
 void listen::star_listen(QByteArray &byte_array)
 {
-//    qDebug()<<__FUNCTION__<<"recv bytes="<<byte_array.size();
+
+    qDebug()<<__FUNCTION__<<byte_array.size();
     if(outdevice==Q_NULLPTR)
     {
-        qDebug()<<__FUNCTION__<<"output == null";
         return;
     }
     for(int i=0;i<byte_array.length()/L_FRAME_COMPRESSED;i++)
@@ -127,16 +122,12 @@ void listen::star_listen(QByteArray &byte_array)
     }
 
 }
-
-/*
- * 对声音进行采集
- *
- */
+/** 对声音进行采集**/
 void listen::readyReadSlot()
 {
     QByteArray datagram;
     while (socket->hasPendingDatagrams())
-    {   
+    {     
            if(socket->pendingDatagramSize()==-1)
            {
                return ;
@@ -144,14 +135,10 @@ void listen::readyReadSlot()
            datagram.resize(socket->pendingDatagramSize());
            QHostAddress sender;
            quint16 senderPort;
-           socket->readDatagram(
-           datagram.data(),
-           datagram.size(),
-           &sender,
-           &senderPort);
+           socket->readDatagram(datagram.data(),datagram.size(),&sender,&senderPort);
            if(datagram.size()>0)
            {
-               emit signalrecvbytes(datagram);
+               star_listen(datagram);
            }
      }
 }

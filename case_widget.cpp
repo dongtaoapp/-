@@ -21,8 +21,7 @@ case_widget::case_widget(QWidget *parent) :
     ui->abs->setStyleSheet(TOPBUTTON_CLOSE);
     ui->bbgs->setStyleSheet(TOPBUTTON_CLOSE);
 
-    QString str="QPushButton:focus{border-image:url(:/images/clicked.png)}"
-                "QPushButton{background-color:#3099e5;color:white;;border-style: none;}";
+    QString str="QPushButton{background-color:#3099e5;color:white;;border-style: none;}";
     this->setStyleSheet(str);
     hs_all=new QPushButton(QStringLiteral("È«²¿"),this);
     hs_all->resize(BTN_TAB_WIDTH,BTN_TAB_HEIGHT);
@@ -90,6 +89,24 @@ void case_widget::paintEvent(QPaintEvent *event)
     opt.init(this);
     QPainter p(this);
     style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
+void case_widget::btnInit()
+{
+    hs_all->setStyleSheet(QString("image:url(:/images/a.png)"));
+    hs_adult->setStyleSheet(QString("image:url(:/images/a.png)"));
+    hs_child->setStyleSheet(QString("image:url(:/images/a.png)"));
+    hs_old->setStyleSheet(QString("image:url(:/images/a.png)"));
+
+    abs_all->setStyleSheet(QString("image:url(:/images/a.png)"));
+    abs_old->setStyleSheet(QString("image:url(:/images/a.png)"));
+    abs_adult->setStyleSheet(QString("image:url(:/images/a.png)"));
+    abs_child->setStyleSheet(QString("image:url(:/images/a.png)"));
+
+    bbgs_all->setStyleSheet(QString("image:url(:/images/a.png)"));
+    bbgs_old->setStyleSheet(QString("image:url(:/images/a.png)"));
+    bbgs_adult->setStyleSheet(QString("image:url(:/images/a.png)"));
+    bbgs_child->setStyleSheet(QString("image:url(:/images/a.png)"));
+
 }
 
 void case_widget::onhsclicked(bool clicked)
@@ -270,19 +287,26 @@ void case_widget::bbgs_btn_place()
 
 void case_widget::on_hs_all()
 {
+    btnInit();
+    hs_all->setStyleSheet(QString("image:url(:/images/clicked.png)"));
    emit case_btn_id(ID_HS_ALL_CASE);
 }
 void case_widget::on_hs_adult()
 {
+    btnInit();
+    hs_adult->setStyleSheet(QString("image:url(:/images/clicked.png)"));
     emit case_btn_id(ID_HS_ADULT_CASE);
 }
-
 void case_widget::on_hs_child()
 {
+    btnInit();
+    hs_child->setStyleSheet(QString("image:url(:/images/clicked.png)"));
     emit case_btn_id(ID_HS_CHILD_CASE);
 }
 void case_widget::on_hs_old()
 {
+    btnInit();
+    hs_old->setStyleSheet(QString("image:url(:/images/clicked.png)"));
     emit case_btn_id(ID_HS_OLD_CASE);
 }
 
@@ -290,59 +314,134 @@ void case_widget::on_hs_old()
 
 void case_widget::on_abs_all()
 {
+    btnInit();
+    abs_all->setStyleSheet(QString("image:url(:/images/clicked.png)"));
     emit case_btn_id(ID_ABS_ALL_CASE);
 }
 void case_widget::on_abs_adult()
 {
+    btnInit();
+    abs_adult->setStyleSheet(QString("image:url(:/images/clicked.png)"));
     emit case_btn_id(ID_ABS_ADULT_CASE);
 }
 void case_widget::on_abs_child()
 {
+    btnInit();
+    abs_child->setStyleSheet(QString("image:url(:/images/clicked.png)"));
     emit case_btn_id(ID_ABS_CHILD_CASE);
 }
 void case_widget::on_abs_old()
 {
+    btnInit();
+    abs_old->setStyleSheet(QString("image:url(:/images/clicked.png)"));
     emit case_btn_id(ID_ABS_OLD_CASE);
 }
 
 
 void case_widget::on_bbgs_all()
 {
+    btnInit();
+    bbgs_all->setStyleSheet(QString("image:url(:/images/clicked.png)"));
     emit case_btn_id(ID_BBGS_ALL_CASE);
 }
 void case_widget::on_bbgs_adult()
 {
+    btnInit();
+    bbgs_adult->setStyleSheet(QString("image:url(:/images/clicked.png)"));
     emit case_btn_id(ID_BBGS_ADULT_CASE);
 }
 void case_widget::on_bbgs_child()
 {
+    btnInit();
+    bbgs_child->setStyleSheet(QString("image:url(:/images/clicked.png)"));
     emit case_btn_id(ID_BBGS_CHILD_CASE);
 }
 void case_widget::on_bbgs_old()
 {
+    btnInit();
+    bbgs_old->setStyleSheet(QString("image:url(:/images/clicked.png)"));
     emit case_btn_id(ID_BBGS_OLD_CASE);
 }
 
 void case_widget::setBtnFouse(int index)
 {
-     switch(index)
+     btnInit();
+
+     if(index==ID_HS_ALL_CASE||index==ID_HS_ADULT_CASE||index==ID_HS_CHILD_CASE||index==ID_HS_OLD_CASE)
      {
-     case 0:
          hs=false;
          onhsclicked(true);
-         hs_all->setFocus();
-         break;
-     case 1:
+     }
+     if(index==ID_HS_ALL_CASE)
+     {
+         hs_all->setStyleSheet(QString("image:url(:/images/clicked.png)"));
+         return;
+     }
+     if(index==ID_HS_ADULT_CASE)
+     {
+         hs_adult->setStyleSheet(QString("image:url(:/images/clicked.png)"));
+         return;
+     }
+     if(index==ID_HS_CHILD_CASE)
+     {
+         hs_child->setStyleSheet(QString("image:url(:/images/clicked.png)"));
+         return;
+     }
+     if(index==ID_HS_OLD_CASE)
+     {
+         hs_old->setStyleSheet(QString("image:url(:/images/clicked.png)"));
+         return;
+     }
+
+     if(index==ID_ABS_ALL_CASE||index==ID_ABS_ADULT_CASE||index==ID_ABS_CHILD_CASE||ID_ABS_OLD_CASE)
+     {
          abs=false;
          onabsclicked(true);
-         abs_all->setFocus();
-         break;
-     case 2:
-         abs_all=false;
-         onbbgsclicked(true);
-         bbgs_all->setFocus();
-         break;
-     default:
-         break;
      }
+     if(index==ID_ABS_ALL_CASE)
+     {
+          abs_all->setStyleSheet(QString("image:url(:/images/clicked.png)"));
+          return;
+     }
+     if(index==ID_ABS_ADULT_CASE)
+     {
+         abs_adult->setStyleSheet(QString("image:url(:/images/clicked.png)"));
+         return;
+     }
+     if(index==ID_ABS_CHILD_CASE)
+     {
+         abs_child->setStyleSheet(QString("image:url(:/images/clicked.png)"));
+         return;
+     }
+     if(index==ID_ABS_OLD_CASE)
+     {
+         abs_old->setStyleSheet(QString("image:url(:/images/clicked.png)"));
+         return;
+     }
+     if(index==ID_BBGS_ALL_CASE||index==ID_BBGS_ADULT_CASE||index==ID_BBGS_CHILD_CASE||index==ID_BBGS_OLD_CASE)
+     {
+         bbgs=false;
+         onbbgsclicked(true);
+     }
+     if(index==ID_BBGS_ALL_CASE)
+     {
+         bbgs_all->setStyleSheet(QString("image:url(:/images/clicked.png)"));
+         return;
+     }
+     if(index==ID_BBGS_ADULT_CASE)
+     {
+         bbgs_adult->setStyleSheet(QString("image:url(:/images/clicked.png)"));
+         return;
+     }
+     if(index==ID_BBGS_CHILD_CASE)
+     {
+         bbgs_child->setStyleSheet(QString("image:url(:/images/clicked.png)"));
+         return;
+     }
+     if(index==ID_BBGS_OLD_CASE)
+     {
+         bbgs_old->setStyleSheet(QString("image:url(:/images/clicked.png)"));
+         return;
+     }
+
 }

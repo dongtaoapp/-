@@ -24,6 +24,7 @@
 #include <QtSerialPort/QSerialPort>
 #include "qsoundcontrol.h"
 #include "qgettreecontentfromweb.h"
+#include "qpalpationpracticetip.h"
 #include <QTreeWidget>
 #include <QWebEngineView>
 #include <QMessageBox>
@@ -88,13 +89,18 @@ public slots:
       void downLoadSoundFile(QByteArray &Data);//下载自定义声音
 
 
-
+      void CourseWareTab();
+      void CaseTab();
+      void DiffTab();
       void onTabchange(int index);
       void flashAction (QString cmd,QString data);
       void loadflash(QString &flashpath);//加载flash
       void setPathshow(QString &path);
       void onPlaybtn();
       void ontalkbtn();
+
+      void ChangeTalkBtnState(bool State);
+
       void onTabBtnClicked(int index);//tab控件点击事件
 
 
@@ -113,6 +119,7 @@ public slots:
       void InitSoundControl();
       //扩音听诊
       void OnSoundPlay();
+      void play();
       //串口读取到数据的处理
       void readyReadSlot();
       //模拟听诊
@@ -124,10 +131,14 @@ public slots:
       void  StartCompareSound(diffSound &data1,diffSound &data2);
 
       void AllTeachInit(bool cmd);
-      void AllTeachAction(QString &action);
+      void AllTeachActionTab(int Tab);
+      void AllTeachActionBtn(QString &action);
       void ALLTeachActionDiffItem(QString &ID);
       void ALLTeachActionDiffItemDelete(QString &index);
       void ALLTeachActionLOAD();
+      void ALLTeachLocalFlash(QString &FlashName);
+
+      void ALLTeachCase(QString &ID);
       void dissconnectedFromTeachComputer();
 private:
     Ui::QTrainMainWindow *ui;
@@ -174,9 +185,9 @@ private:
     QString m_flashpath;
     bool m_play,is_soundPlay,is_allTeach,is_listen;
     int xOffset,yOffset;
-    int comboID;//当前那个Tab存在套餐
+    int comboID,CurrentBtnIndex;//当前那个Tab存在套餐
     m_ftp_manager webmanager;
-    QMessageBox *TipBox;
+    QPalpationpracticeTip *TipBox;
     QString webIP;
     bool isloadflash;
     bool Synchronous;//同步教学状态标识

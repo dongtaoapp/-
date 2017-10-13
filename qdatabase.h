@@ -1,35 +1,35 @@
 #ifndef QDATABASE_H
 #define QDATABASE_H
+#if 0
+#include <QObject>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QList>
+#include <QString>
+typedef struct loginInfo{
+    QString name;
+    QString pw;
+    bool Rbpw;
+    QString HeadImage;
 
-//#include <QObject>
-//#include <QSqlDatabase>
-//#include <QSqlQuery>
-//#include <QList>
-//#include <QString>
-//typedef struct loginInfo{
-//    QString name;
-//    QString pw;
-//    bool Rbpw;
-//    QString HeadImage;
+}loginInfo;
 
-//}loginInfo;
+class QDataBase : public QObject
+{
+    Q_OBJECT
+public:
+    QDataBase();
+    ~QDataBase();
 
-//class QDataBase : public QObject
-//{
-//    Q_OBJECT
-//public:
-//    QDataBase();
-//    ~QDataBase();
-
-//    QList<loginInfo> teacherInfo();
+    QList<loginInfo> teacherInfo();
 
 
-//    void insertInfo(loginInfo &info);
+    void insertInfo(loginInfo &info);
 
-//    void updateInfo(loginInfo &info);
+    void updateInfo(loginInfo &info);
 
-//private:
-//    QSqlDatabase db;
-//};
-
+private:
+    QSqlDatabase db;
+};
+#endif
 #endif // QDATABASE_H

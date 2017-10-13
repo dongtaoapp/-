@@ -4,7 +4,7 @@
 #include <QIODevice>
 #include <QUdpSocket>
 #include <QAudioInput>
-#include <QStringList>
+#include <QThread>
 extern "C"
 {
 #include "va_g729a.h"
@@ -22,18 +22,14 @@ private:
     void initial();
 
 };
-
-
-
 class speak: public QObject
 {
     Q_OBJECT
 public:
     speak();
     ~speak();
-    bool setTalkipList(QStringList &ipList);//设置udp发送的IP地址可能会用于分组语音讨论
+  //  bool setTalkipList(QStringList &ipList);//设置udp发送的IP地址可能会用于分组语音讨论
 signals:
-    void signalSpeakdata(QByteArray &speak_data);
     void error(QString &error);
 public slots:
     void state(QAudio::State state);
@@ -47,6 +43,9 @@ private:
     QAudioInput *input;
     CG729Encoder cg729Encoder;
     QByteArray tempBuffer;
-    QStringList m_iplist;
+   // QStringList m_iplist;
+  //  QMutex speakListmutex;
+
+    QThread m_thread;
 };
 #endif // SPEAK_H

@@ -6,11 +6,13 @@
 #include <QAudioFormat>
 #include <QUdpSocket>
 #include <QAudioOutput>
+#include <QThread>
 
 extern "C"
 {
  #include "va_g729a.h"
-}
+}        
+
 class CG729Decoder
 {
 public:
@@ -28,8 +30,8 @@ class listen: public QObject
 public:
      listen();
     ~listen();
-    quint16 return_m_port(){return m_port;}
 public slots:
+
 
     bool start_system_audio();//开始listen
 
@@ -39,9 +41,7 @@ public slots:
 
     void star_listen(QByteArray &byte_array);
 
-    void funbind(quint16 port);//端口绑定函数
 signals:
-  void  signalrecvbytes(QByteArray &);
   void  signalSetport();
 private:
     QIODevice *outdevice;
@@ -50,7 +50,9 @@ private:
     CG729Decoder cg729Decoder;
     QByteArray tempframe;
 
-    quint16 m_port;
+    QByteArray thread_byte;
+
+    QThread m_thread;
 };
 
 #endif // LISTEN_H
