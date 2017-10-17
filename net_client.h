@@ -53,6 +53,7 @@ signals:
     void ALLTeachAuscultation();//=======Ь§ея
 
     void ALLTeachTalk(bool);
+    void ALLTeacherPatter(QString);
     void CONNECTEDSUCCESS();
     void DISSCONNECTED();
 //    void signal_control_talk(bool talk);

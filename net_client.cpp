@@ -31,19 +31,28 @@ net_client::~net_client()
 {
    net_client_socket->abort();
    net_client_socket->deleteLater();
-
    udpsocket->deleteLater();
-
-    this->deleteLater();
-   qDebug()<<__FUNCTION__;
-
+   this->deleteLater();
 }
 
 void net_client::onUdpSocket()
 {
+
+    if(net_client_socket->state()==QAbstractSocket::HostLookupState||QAbstractSocket::ConnectedState||QAbstractSocket::ConnectingState)
+    {
+        net_client_socket->close();
+    }
     QSettings *readconfig=new QSettings(APPPATH,QSettings::IniFormat);
-    readconfig->value("Client/ServerIP").toString();
-    connect_to_server(readconfig->value("Client/ServerIP").toString(),666666);
+    QString localhostName=readconfig->value("Client/ServerIP").toString();
+    QHostInfo info=QHostInfo::fromName(localhostName);
+    foreach(QHostAddress address,info.addresses())
+    {
+      if(address.protocol()==QAbstractSocket::IPv4Protocol)
+          {
+            qDebug()<<__FUNCTION__<<address.toString();
+            connect_to_server(address.toString(),666666);
+          }
+    }
     delete readconfig;
 }
 
@@ -196,21 +205,24 @@ void net_client::manager_msg(QByteArray &recv)
          }
          if(type==QString("string"))
          {
-            if(object.value("cmd").toString()==QString("NULL"))
-            {
-                if(data=="CLIENTCONNECTEDSUCCESS")
-                {
-                    net_client_socket->write(TellServerDeskID());
-                    QMessageBox::information(NULL,QStringLiteral("连接提示"),QStringLiteral("连接教师机成功"),QMessageBox::Yes);
-                    emit CONNECTEDSUCCESS();
-                    return;
-                }
-            }
+             if(cmd=="CLIENTCONNECTEDSUCCESS")
+             {
+                net_client_socket->write(TellServerDeskID());
+                QMessageBox::information(NULL,QStringLiteral("连接提示"),QStringLiteral("连接教师机成功"),QMessageBox::Yes);
+                emit CONNECTEDSUCCESS();
+                emit ALLTeacherPatter(data);
+                return;
+              }
          }
+
+
          if(type==QString("talk"))
          {
-//            bool cmd=object.value("cmd").toBool();
             emit ALLTeachTalk(object.value("cmd").toBool());
+         }
+         if(type==QString("Patter"))
+         {
+             emit ALLTeacherPatter(cmd);
          }
     }
     else
@@ -236,7 +248,7 @@ void net_client::error(QAbstractSocket::SocketError errorstring)
        emit signal_socket_state(net_client_state::UNKNOWNERROR);
    }
 #endif
-   QMessageBox::information(NULL,QStringLiteral("信息提示"),QStringLiteral("连接教师机失败"),QMessageBox::Yes);
+//   QMessageBox::information(NULL,QStringLiteral("信息提示"),QStringLiteral("连接教师机失败"),QMessageBox::Yes);
 }
 
 void net_client::shutdown()

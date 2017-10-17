@@ -14,6 +14,7 @@
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QDesktopWidget>
 QString string111;
 void parentExpand(QTreeWidgetItem *item)
 {
@@ -219,7 +220,7 @@ void QTrainMainWindow::loadqss()
 void QTrainMainWindow::flashAction(QString cmd, QString data)
 {
     qDebug()<<__FUNCTION__<<cmd<<data;
-    flash_widget->dynamicCall("CallFunction(string)",FLASHPLAY);
+    flash_widget->StartPlay();
     play_btn->setStyleSheet("border-style:none;image:url(:/images/play_button_presed.png)");
     m_play=true;
     if(is_listen)
@@ -332,9 +333,8 @@ void QTrainMainWindow::windowInit()
     searchEdit=new m_searchLineEdit(this);
     searchEdit->setGeometry(133,34,228,26);
 
-    flash_widget=new QAxWidget(this);
+    flash_widget=new QMAxWidget(this);
     flash_widget->setGeometry(406,98,844,642);
-    flash_widget->setControl(QString::fromUtf8("{d27cdb6e-ae6d-11cf-96b8-444553540000}"));
     flash_widget->hide();
 
     web_PPt=new QWebEngineView(this);
@@ -406,7 +406,7 @@ void QTrainMainWindow::loadflash(QString &flashpath)
 {
     m_flashpath.clear();
     m_flashpath=flashpath;
-    flash_widget->dynamicCall("LoadMovie(long,string)",0,flashpath);
+    flash_widget->loadFlash(m_flashpath);
     isloadflash=true;
     m_play=false;
 
@@ -435,14 +435,14 @@ void QTrainMainWindow::onPlaybtn()
    }
     if(m_play)
     {
-        flash_widget->dynamicCall("CallFunction(string)",FLASHPAUSE);
+        flash_widget->PausePlay();
         play_btn->setStyleSheet("border-style:none;image:url(:/images/play_button.png)");
         m_play=false;
         return;
     }
     else if(!m_play)
     {
-       flash_widget->dynamicCall("CallFunction(string)",FLASHPLAY);
+       flash_widget->StartPlay();
        play_btn->setStyleSheet("border-style:none;image:url(:/images/play_button_presed.png)");
        m_play=true;
        return;
@@ -556,7 +556,7 @@ void QTrainMainWindow::ChangeTabStyleSheet(int index)
         {
              if(isloadflash)
              {
-                flash_widget->dynamicCall("CallFunction(string)",FLASHPAUSE);
+                flash_widget->PausePlay();
                 loadflash(QString("reset"));
                 isloadflash=false;
              }
@@ -747,17 +747,9 @@ void QTrainMainWindow::OnFlashItemData(QCoursewareInfo &info)
         speak_btn->setEnabled(true);
         is_soundPlay=false;
     }
-//   if(info.m_strFlash.isEmpty())
-//    {
-//        play_btn->setStyleSheet(QString("image:url(:/images/play_button_gray.png)"));
-//        play_btn->setEnabled(false);
-//        return;
-//    }
-//   else
-//    {
-        play_btn->setStyleSheet(QString("image:url(:/images/play_button.png)"));
-        play_btn->setEnabled(true);
-//    }
+
+    play_btn->setStyleSheet(QString("image:url(:/images/play_button.png)"));
+    play_btn->setEnabled(true);
    if(CurrentBtnIndex==ID_ECG_CWARE)
    {
        listen_btn->setStyleSheet(QString("image:url(:/images/auscultation_button.png_gray.png)"));
@@ -792,7 +784,7 @@ void QTrainMainWindow::OnFlashItemData(QCoursewareInfo &info)
 
 void QTrainMainWindow::OnwebItemData(userCourseware &info)
 {
-    flash_widget->dynamicCall("CallFunction(string)",FLASHPAUSE);//½«flash Í£Ö¹
+    flash_widget->PausePlay();
     play_btn->setStyleSheet(QString("image:url(:/images/play_button_gray.png)"));
     listen_btn->setStyleSheet(QString("image:url(:/images/auscultation_button.png_gray.png)"));
     speak_btn->setStyleSheet(QString("image:url(:/images/amplifyingauscultation_button.png_gray.png)"));
@@ -837,6 +829,8 @@ void QTrainMainWindow::m_show()
        baseTree.setDiffTree(qFlashTreeBase::HEARTDIFF);
        m_tab->setTypeFoucse(main_tab::DiffFoucse,0);
        m_tab->setCurrentIndex(2);
+       QDesktopWidget* desktop =qApp->desktop();
+       this->move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
        this->show();
        this->InitSoundControl();
 }
@@ -979,8 +973,6 @@ void QTrainMainWindow::PalpationTraining(QString &text,int index)
 
 
 }
-
-
 
 void QTrainMainWindow::OnDiffSoundData(diffSound &diffsound)
 {

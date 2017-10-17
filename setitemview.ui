@@ -39,106 +39,10 @@ QPushButton:focus{
     </rect>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>2</number>
    </property>
-   <widget class="QWidget" name="page">
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>20</y>
-       <width>281</width>
-       <height>170</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">border-style:solid;
-border:1px solid black</string>
-     </property>
-     <property name="title">
-      <string>心音模拟听诊模式选择</string>
-     </property>
-     <widget class="QRadioButton" name="radioButton">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>30</y>
-        <width>201</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border-style:none</string>
-      </property>
-      <property name="text">
-       <string>肺部区域听诊时 无呼吸音</string>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="radioButton_2">
-      <property name="geometry">
-       <rect>
-        <x>40</x>
-        <y>80</y>
-        <width>201</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border-style:none</string>
-      </property>
-      <property name="text">
-       <string>肺部区域听诊时 有呼吸音</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="page_3">
-    <widget class="QGroupBox" name="groupBox_3">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>291</width>
-       <height>170</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>心肺音扩音听诊模式选择</string>
-     </property>
-     <widget class="QRadioButton" name="radioButton_3">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>70</y>
-        <width>241</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>心肺音直接扩音听诊</string>
-      </property>
-      <property name="checked">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="radioButton_4">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>140</y>
-        <width>231</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>电子听诊器接触式扩音听诊</string>
-      </property>
-     </widget>
-    </widget>
-   </widget>
+   <widget class="QWidget" name="page"/>
+   <widget class="QWidget" name="page_3"/>
    <widget class="QWidget" name="page_4">
     <widget class="QLabel" name="label_4">
      <property name="geometry">
@@ -215,7 +119,7 @@ font-size:18px;</string>
       <string notr="true">font-size:14px;</string>
      </property>
      <property name="text">
-      <string>教师机IP</string>
+      <string>教师机名</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="trachIP">
@@ -324,37 +228,11 @@ border-right:1px solid #ebedee</string>
    <property name="title">
     <string/>
    </property>
-   <widget class="QPushButton" name="btn1">
-    <property name="geometry">
-     <rect>
-      <x>-1</x>
-      <y>0</y>
-      <width>111</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>心音模拟听诊</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btn2">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>50</y>
-      <width>111</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>肺音模拟听诊</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="btn3">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>110</y>
+      <y>0</y>
       <width>111</width>
       <height>23</height>
      </rect>
@@ -367,7 +245,7 @@ border-right:1px solid #ebedee</string>
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>160</y>
+      <y>60</y>
       <width>111</width>
       <height>23</height>
      </rect>

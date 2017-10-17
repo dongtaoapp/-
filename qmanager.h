@@ -20,6 +20,7 @@ public:
 public slots:
     void managerListen();
     void ControlTalk(bool cmd);
+    void ALLTeacherPatter(QString patter);
 signals:
     void startAllteacher(bool);
     void AllTeachActionTab(int Tab);

@@ -28,8 +28,8 @@ SetItemView::SetItemView(QWidget *parent) :
     SerialPortInit();
     this->Init();
     connect(this,SIGNAL(changPag(int)),ui->stackedWidget,SLOT(setCurrentIndex(int)));
-    connect(ui->btn1,SIGNAL(clicked(bool)),this,SLOT(onBtn1()));
-    connect(ui->btn2,SIGNAL(clicked(bool)),this,SLOT(onBtn2()));
+//    connect(ui->btn1,SIGNAL(clicked(bool)),this,SLOT(onBtn1()));
+//    connect(ui->btn2,SIGNAL(clicked(bool)),this,SLOT(onBtn2()));
     connect(ui->btn3,SIGNAL(clicked(bool)),this,SLOT(onBtn3()));
     connect(ui->btn4,SIGNAL(clicked(bool)),this,SLOT(onBtn4()));
     connect(ui->cancelBtn,SIGNAL(clicked(bool)),this,SLOT(oncancelBtn()));
@@ -53,18 +53,18 @@ void SetItemView::SerialPortInit()
         i++;
     }
 }
-void SetItemView::onBtn1()
-{
-    btnInit();
-    ui->btn1->setStyleSheet(QString("QPushButton{color:#4aabe9;background-color:#f6f7fc}"));
-    emit changPag(0);
-}
-void SetItemView::onBtn2()
-{
-    btnInit();
-    ui->btn2->setStyleSheet(QString("QPushButton{color:#4aabe9;background-color:#f6f7fc}"));
-    emit changPag(1);
-}
+//void SetItemView::onBtn1()
+//{
+//    btnInit();
+//    ui->btn1->setStyleSheet(QString("QPushButton{color:#4aabe9;background-color:#f6f7fc}"));
+//    emit changPag(0);
+//}
+//void SetItemView::onBtn2()
+//{
+//    btnInit();
+//    ui->btn2->setStyleSheet(QString("QPushButton{color:#4aabe9;background-color:#f6f7fc}"));
+//    emit changPag(1);
+//}
 void SetItemView::onBtn3()
 {
     btnInit();
@@ -79,8 +79,8 @@ void SetItemView::onBtn4()
 }
 void SetItemView::btnInit()
 {
-        ui->btn1->setStyleSheet(QString("QPushButton{color:;background-color:}"));
-        ui->btn2->setStyleSheet(QString("QPushButton{color:;background-color:}"));
+//        ui->btn1->setStyleSheet(QString("QPushButton{color:;background-color:}"));
+//        ui->btn2->setStyleSheet(QString("QPushButton{color:;background-color:}"));
         ui->btn3->setStyleSheet(QString("QPushButton{color:;background-color:}"));
         ui->btn4->setStyleSheet(QString("QPushButton{color:;background-color:}"));
 }
@@ -88,55 +88,55 @@ void SetItemView::Init()
 {
     pag1_radiobtn= configInit->value("System_Param/HeartAuscultateType").toInt();
     pag2_radiobtn=configInit->value("System_Param/LoudSoundType").toInt();
-    switch(pag1_radiobtn)
-    {
-    case 1:
-        ui->radioButton->setChecked(true);
-        break;
-    case 0:
-        ui->radioButton_2->setChecked(true);
-        break;
-    default:
-        ui->radioButton->setChecked(true);
-        break;
-    }
-    switch(pag2_radiobtn)
-    {
-    case 1:
-        ui->radioButton_3->setChecked(true);
-        break;
-    case 0:
-        ui->radioButton_4->setChecked(true);
-        break;
-    default:
-        ui->radioButton_3->setChecked(true);
-        break;
-    }
+//    switch(pag1_radiobtn)
+//    {
+//    case 1:
+//        ui->radioButton->setChecked(true);
+//        break;
+//    case 0:
+//        ui->radioButton_2->setChecked(true);
+//        break;
+//    default:
+//        ui->radioButton->setChecked(true);
+//        break;
+//    }
+//    switch(pag2_radiobtn)
+//    {
+//    case 1:
+//        ui->radioButton_3->setChecked(true);
+//        break;
+//    case 0:
+//        ui->radioButton_4->setChecked(true);
+//        break;
+//    default:
+//        ui->radioButton_3->setChecked(true);
+//        break;
+//    }
     ui->studentID->setText(configInit->value("System_Param/deskID").toString());
     ui->web_ip->setText(configInit->value("System_Param/WebIP").toString());
     ui->comBoxComPort->setCurrentText(configInit->value("System_Param/Comm").toString());
     ui->trachIP->setText(configInit->value("Client/ServerIP").toString());
 }
-void SetItemView::radioButtonInit()
-{
-    if(ui->radioButton->isChecked())
-    {
-        configInit->setValue("System_Param/HeartAuscultateType","1");
-    }
-    if(!ui->radioButton->isChecked())
-    {
-        configInit->setValue("System_Param/HeartAuscultateType","0");
-    }
-   if(ui->radioButton_3->isChecked())
-    {
-        configInit->setValue("System_Param/LoudSoundType","1");
-    }
-    if(!ui->radioButton_3->isChecked())
-    {
-        configInit->setValue("System_Param/LoudSoundType","0");
-    }
+//void SetItemView::radioButtonInit()
+//{
+//    if(ui->radioButton->isChecked())
+//    {
+//        configInit->setValue("System_Param/HeartAuscultateType","1");
+//    }
+//    if(!ui->radioButton->isChecked())
+//    {
+//        configInit->setValue("System_Param/HeartAuscultateType","0");
+//    }
+//   if(ui->radioButton_3->isChecked())
+//    {
+//        configInit->setValue("System_Param/LoudSoundType","1");
+//    }
+//    if(!ui->radioButton_3->isChecked())
+//    {
+//        configInit->setValue("System_Param/LoudSoundType","0");
+//    }
 
-}
+//}
 
 
 /******Ð´ÈëÅäÖÃÎÄ¼þ*******/
@@ -151,7 +151,7 @@ void SetItemView::onOkbtn()
                 &&Comm==ui->comBoxComPort->currentText()
                 &&ServerIP==ui->trachIP->text())
         {
-            radioButtonInit();
+//            radioButtonInit();
             this->close();
         }
         else
@@ -164,7 +164,7 @@ void SetItemView::onOkbtn()
                 configInit->setValue("System_Param/WebIP",ui->web_ip->text());
                 configInit->setValue("System_Param/Comm",ui->comBoxComPort->currentText());
                 configInit->setValue("Client/ServerIP",ui->trachIP->text());
-                radioButtonInit();
+//                radioButtonInit();
                 qApp->quit();
                 QProcess::startDetached(qApp->applicationFilePath(), QStringList());
             }
