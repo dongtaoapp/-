@@ -12,13 +12,20 @@
 #include <QTreeWidgetItemIterator>
 #include <QMessageBox>
 #include <QPainter>
+#include <QFont>
+QTreeWidgetItem *DefaultPtr=Q_NULLPTR;
+QCoursewareInfo Default;
+
+
+//extern QString Global_DefaulFlashHL;
+//extern QString Global_DefaulFlashABT;
+//extern QString Global_DefaulFlashECG;
 /*****************病例Item Widget**************/
 TreeItemWidget::TreeItemWidget(QWidget *parent,TreeItemWidgetType Type):
     QWidget(parent)
 {
       Casecolum0Clicked=false;
       setTreeItemWidgetType(Type);
-
       canadd=true;
 }
 
@@ -80,6 +87,7 @@ qFlashTreeBase::qFlashTreeBase(QWidget *parent) :
     QTreeWidget(parent)
 {
     items=0;
+    m_default=QStringLiteral("/心脏听诊/听诊基础");
     treeInit();
     ReadJsonWorkhl=new QParseCourseWareFileOp;
     ReadJsonWorkABT=new QParseCourseWareFileOp;
@@ -89,7 +97,6 @@ qFlashTreeBase::qFlashTreeBase(QWidget *parent) :
     connect(this->horizontalScrollBar(),SIGNAL(valueChanged(int)),this,SLOT(OnTreeCtrlScroll(int)));
     connect(this,SIGNAL(itemClicked(QTreeWidgetItem*,int)),this,SLOT(doItemClicked(QTreeWidgetItem*,int)));
 }
-
 void qFlashTreeBase::treeInit()
 {
     this-> setFocusPolicy(Qt::NoFocus);
@@ -148,16 +155,17 @@ void qFlashTreeBase::setCaseTree(CaseType type)
 {
     this->clear();
     this->setIndentation(15);
-    this->setColumnWidth(1,35);
-    this->setColumnWidth(0,223);
+    this->setColumnWidth(1,46);
+    this->setColumnWidth(0,212);
     TreeItemWidget_map.clear();
     if(lststardardCase.isEmpty())
     {
         qDebug()<<__FUNCTION__<<"no case Data";
         return;
     }
-    this->setStyleSheet(QString("QTreeView::item:selected{color:green;}"
-                                "QTreeView::item{border-style:sold;border-bottom:1px solid #bebebe;}"));
+    this->setStyleSheet(QString("QTreeView::item:selected{background-color:#c9cacb;}"
+                                "QTreeView::item:hover{background-color:#f1f2f3;}"
+                                "QTreeView::item{border-style:sold;border-bottom:1px solid #e7e8e9;}"));
     adult=new QTreeWidgetItem(this);
     adult->setSizeHint(0,QSize(900,20));
     adult->setData(0,Qt::UserRole+2,QString("Case"));
@@ -182,7 +190,6 @@ void qFlashTreeBase::setCaseTree(CaseType type)
         stardardCase Case=lststardardCase.at(i);
         if(Case.m_strType==QString("0"))
         {
-
             addCaseChildItem(Case.m_strHuman,Case);
         }
      }
@@ -209,7 +216,10 @@ void qFlashTreeBase::setCaseTree(CaseType type)
           }
        }
    }
+   this->expandAll();
+   GetSonNum();
 }
+
 void qFlashTreeBase::addCaseChildItem(QString &Type,stardardCase &Case)
 {
     QTreeWidgetItem *item=Q_NULLPTR;
@@ -235,10 +245,24 @@ void qFlashTreeBase::addCaseChildItem(QString &Type,stardardCase &Case)
     caseItem_map.insert(Case.m_strCaseId.toInt(),item);
     TreeItemWidget_map.insert(item->text(0),ItemWidget);
 }
+
 QTreeWidgetItem *qFlashTreeBase::GetCaseItem(int index)
 {
     return caseItem_map.find(index).value();
 }
+
+stardardCase qFlashTreeBase::GetCaseItemData(int CaseID)
+{
+    for(int i=0;i<lststardardCase.size();i++)
+    {
+        stardardCase caseData=lststardardCase.at(i);
+        if(caseData.m_strCaseId.toInt()==CaseID)
+        {
+            return caseData;
+        }
+    }
+}
+
 
 //------------------鉴别听诊相关接口
 void qFlashTreeBase::GetDiffSoundData(QByteArray &Data)
@@ -389,22 +413,29 @@ void qFlashTreeBase::setCouseWare(CourseWareType type)
     this->clear();
     CouseWareStyleSheet();
     this->setIndentation(20);
-    this->setColumnWidth(1,15);
-    this->setColumnWidth(0,235);
+    this->setColumnWidth(1,46);
+    this->setColumnWidth(0,206);
+    Item_map.clear();
     if(type==HeartLungCourse)
     {
         QMapIterator<QString, QCoursewareInfo> map(CourseWareHL_map);
         constructionCouseWareTree(map);
+        this->expandAll();
+//        this->setCurrentItem(GetItem(Global_DefaulFlashHL));
     }
     else if(type==ABTCourse)
     {
         QMapIterator<QString, QCoursewareInfo> map(CourseWareABT_map);
         constructionCouseWareTree(map);
+        this->expandAll();
+//        this->setCurrentItem(GetItem(Global_DefaulFlashABT));
     }
     else if(type==ECGCourse)
     {
         QMapIterator<QString, QCoursewareInfo> map(CourseWareECG_map);
         constructionCouseWareTree(map);
+        this->expandAll();
+//        this->setCurrentItem(GetItem(Global_DefaulFlashECG));
     }
     SetCustomcoursewareTree(type);
 }
@@ -423,12 +454,7 @@ void qFlashTreeBase::constructionCouseWareTree(QMapIterator<QString, QCourseware
            item->setData(0,Qt::UserRole+2,QString("Coursewar"));
            item->setData(1,Qt::UserRole+2,QString("Coursewar"));
            item->setText(0,map.value().m_strCoursewareName);
-           if(map.value().sonClsaa!=0)
-           {
-                item->setText(1,QString::number(map.value().sonClsaa));
-           }
            Item_map.insert(map.key(),item);
-           this->expandItem(item);
         }
         if(count>1)
         {
@@ -441,19 +467,20 @@ void qFlashTreeBase::constructionCouseWareTree(QMapIterator<QString, QCourseware
                 item->setData(0,Qt::UserRole+2,QString("Coursewar"));
                 item->setData(1,Qt::UserRole+2,QString("Coursewar"));
                 item->setText(0,map.value().m_strCoursewareName);
-                if(map.value().sonClsaa!=0)
-                {
-                    item->setText(1,QString::number(map.value().sonClsaa));
-                }
                 Item_map.insert(map.key(),item);
+                if(map.value().m_strTreeDir==m_default)
+                {
+                    Default=map.value();
+                    DefaultPtr=item;
                 }
                 else
                 {
-                    qDebug()<<__FUNCTION__<<map.key();
-                    return;
+                    DefaultPtr=Q_NULLPTR;
                 }
+            }
         }
      }
+    GetSonNum();
 }
 void qFlashTreeBase::GetCustomCouseDataFinsh()
 {
@@ -571,15 +598,18 @@ void qFlashTreeBase::doItemClicked(QTreeWidgetItem *item, int colum)
            QVariant data= item->data(0,Qt::UserRole);
            userCourseware info=data.value<userCourseware>();
            emit webItemData(info);
-           return;
+//           return;
        }
        else if(item->data(0,Qt::UserRole+1).toString()==QString("local"))
        {
-
            QVariant variant = item->data(0,Qt::UserRole);
            QCoursewareInfo info= variant.value<QCoursewareInfo>();
+           if(!info.m_CaseID.isEmpty())
+           {
+               m_CaseIDMsg=info.m_strTreeDir+QString(":")+info.m_CaseID;
+           }
            emit FlahsItemData(info);
-           return;
+//           return;
        }
    }
    /*********************点击病例Item**************************/
@@ -614,20 +644,26 @@ void qFlashTreeBase::doItemClicked(QTreeWidgetItem *item, int colum)
 
                    emit CaseItemData(item->data(0,Qt::UserRole).value<stardardCase>());//发送Item 点击信息
                 }
-                else
-                {
-                    return;
-                }
+//                else
+//                {
+//                    return;
+//                }
             }
          }
    }
-   /*************点击鉴别听诊Item********************/
-//   else if(data0==QString("Diff")||data1==QString("Diff"))
-//   {
-//       QVariant data= item->data(0,Qt::UserRole);
-//       diffSound info=data.value<diffSound>();
-//       qDebug()<<info.m_strId;
-//   }
+   if(item->childCount()!=0)
+   {
+       bool expandll=item->isExpanded();
+       if(expandll)
+       {
+           item->setExpanded(false);
+       }
+       if(!expandll)
+       {
+           item->setExpanded(true);
+       }
+
+   }
 
 }
 
@@ -637,6 +673,34 @@ void qFlashTreeBase::OnTreeCtrlScroll(int n)
      this->header()->resizeSection(0,220+this->horizontalScrollBar()->value());
      this->header()->resizeSection(2,m_nMaxTreeCoursewareLen-220-this->horizontalScrollBar()->value());
 }
+
+void qFlashTreeBase::GetSonNum()
+{
+    QTreeWidgetItemIterator  it (this);
+    while (*it)
+    {
+        int count=(*it)->childCount();
+        if(count!=0)
+        {
+            QString num=QString::number(GetAllSonNum((*it)));
+            QString str=QString("(")+num+QString(")");
+            (*it)->setText(1,str);
+        }
+        it++;
+    }
+}
+int qFlashTreeBase::GetAllSonNum(QTreeWidgetItem *item)
+{
+    int aa=0;
+    aa +=item->childCount();
+    int cc=0;
+    for(int i=0;i<aa;i++)
+    {
+      cc += GetAllSonNum(item->child(i));
+    }
+    return aa+cc;
+}
+
 
 
 

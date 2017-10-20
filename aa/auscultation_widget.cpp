@@ -46,10 +46,10 @@ void auscultation_widget::setBtnFoucse(int index)
     btnInit();
     switch(index)
     {
-    case 0:
+    case ID_HS_AUT:
         ui->HS_bt->setStyleSheet(QString("image:url(:/images/clicked.png)"));
         break;
-    case 1:
+    case ID_BS_AUT:
         ui->BS_btn->setStyleSheet(QString("image:url(:/images/clicked.png)"));
     default:
         break;

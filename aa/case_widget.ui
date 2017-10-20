@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>courseware_widget</class>
- <widget class="QWidget" name="courseware_widget">
+ <class>case_widget</class>
+ <widget class="QWidget" name="case_widget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,9 +11,9 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>courseware_widget</string>
+   <string>Form</string>
   </property>
-  <widget class="QPushButton" name="HT_btn">
+  <widget class="QPushButton" name="hs">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -23,10 +23,10 @@
     </rect>
    </property>
    <property name="text">
-    <string>心肺听诊教学</string>
+    <string>心音听诊</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="abdomen_T_btn">
+  <widget class="QPushButton" name="abs">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -36,10 +36,10 @@
     </rect>
    </property>
    <property name="text">
-    <string>腹部触诊教学</string>
+    <string>肺部听诊</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="ECG_btn">
+  <widget class="QPushButton" name="bbgs">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -49,10 +49,10 @@
     </rect>
    </property>
    <property name="text">
-    <string>心电图教学</string>
+    <string>肠鸣音听诊</string>
    </property>
   </widget>
-  <widget class="QLabel" name="title_label">
+  <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -62,15 +62,13 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">
-color:white;</string>
+    <string notr="true">color:white</string>
    </property>
    <property name="text">
-    <string>      课件</string>
+    <string>   标准化听诊病例</string>
    </property>
   </widget>
  </widget>
- <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections/>
 </ui>

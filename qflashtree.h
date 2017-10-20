@@ -31,6 +31,7 @@ public :
      void changBtnStyle(QString &str);
 
      void setBtnData(const QString &data);
+
 public:
       bool Casecolum0Clicked;//判断病例是否是先点击Cloum0；
 public slots:
@@ -81,6 +82,9 @@ public:
 
     void setCouseWare(CourseWareType type);
     void constructionCouseWareTree(QMapIterator<QString, QCoursewareInfo> &map);
+
+    void GetSonNum();
+    int GetAllSonNum(QTreeWidgetItem *item);
 signals:
     void FlahsItemData(QCoursewareInfo &info);//本地flash Item信息
     void webItemData(userCourseware &);//自定义 课件Item 信息
@@ -109,6 +113,8 @@ public slots:
     void GetCaseData();
     void addCaseChildItem(QString &Type,stardardCase &Case);
     QTreeWidgetItem *GetCaseItem(int index);
+    QString CaseIDMsg(){return m_CaseIDMsg;}
+    stardardCase  GetCaseItemData(int CaseID);
 
     //--------------鉴别听诊相关接口
     void GetDiffSoundData(QByteArray &Data);
@@ -147,7 +153,14 @@ public:
     QString jsonPath;
     CourseWareType m_Coursetype;
     QByteArray m_CustomCourseData;
+
     QMap<QString,QTreeWidgetItem*> Item_map;//课件存储父节点
+
     int items;
+
+    QString m_default;
+
+    QString m_CaseIDMsg;
+
 };
 #endif // QFLASHTREE_H

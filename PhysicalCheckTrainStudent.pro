@@ -59,7 +59,8 @@ SOURCES += main.cpp\
     qsetsystemview.cpp \
     net_client.cpp \
     qpalpationpracticetip.cpp \
-    qmaxwidget.cpp
+    qmaxwidget.cpp \
+    qlistenbroadcast.cpp
 
 HEADERS  += qtrainmainwindow.h \
     auscultation_widget.h \
@@ -106,7 +107,8 @@ HEADERS  += qtrainmainwindow.h \
     qsetsystemview.h \
     net_client.h \
     qpalpationpracticetip.h \
-    qmaxwidget.h
+    qmaxwidget.h \
+    qlistenbroadcast.h
 
 FORMS    += qtrainmainwindow.ui \
     auscultation_widget.ui \

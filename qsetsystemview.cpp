@@ -40,11 +40,9 @@ void QSetSystemView::onMYItemclicked(QListWidgetItem *item)
     else if(item->text()==QStringLiteral("ÉèÖÃ"))
     {
 
-         this->close();
-        setView->onBtn4();
+        this->close();
+        setView->onBtn3();
         setView->exec();
-
-
     }
     else if(item->text()==QStringLiteral("¹ØÓÚ"))
     {

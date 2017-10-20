@@ -20,6 +20,8 @@ public:
 //    void radioButtonInit();
 
     void SerialPortInit();
+protected:
+    void closeEvent(QCloseEvent *);
 public slots:
 //    void onBtn1();
 //    void onBtn2();
@@ -34,7 +36,11 @@ private:
     QString Apppath;
     QSettings *configInit;
 
-    int pag1_radiobtn,pag2_radiobtn;
+//    int pag1_radiobtn,pag2_radiobtn;
+     QString deskID;
+      QString WebIP;
+      QString Comm;
+     QString ServerIP;
 
 };
 

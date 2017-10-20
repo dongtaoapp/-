@@ -10,7 +10,7 @@
 #include <QThread>
 #include <QMetaType>
 #include <QByteArray>
-
+#include <QFont>
 void GetClassScheduleData(QList<ClassScheduleData> *schedule_list)
 {
 
@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
     qRegisterMetaType<diffSound>("diffSound &");
     qRegisterMetaType<QString>("QString &");
     qDebug()<<"main thread"<<QThread::currentThreadId();
+    qApp->setFont(QFont("SimHei",11));
     QTrainMainWindow w;
     w.GetDiffData();
 //    w.show();

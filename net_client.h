@@ -7,6 +7,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QAbstractSocket>
 class net_client : public QObject
 {
     Q_OBJECT
@@ -21,8 +22,12 @@ public:
     net_client(QObject *parent=Q_NULLPTR);
     ~net_client();
     QByteArray TellServerDeskID();
+
+
 public:
    void connect_to_server(QString ip,qint16 port);
+
+   QAbstractSocket::SocketState ConnectedState(){return net_client_socket->state();}
 public slots:
      void send_msg(QByteArray &msg);
 
@@ -37,7 +42,7 @@ public slots:
 
 
 
-    void onUdpSocket();
+//    void onUdpSocket();
 signals:
     void startAllTeach(bool);
     void AllTeachActionTab(int tab);
@@ -68,6 +73,6 @@ private:
    QJsonDocument jdocument;
    QJsonObject jobject;
 
-   QUdpSocket *udpsocket;
+//   QUdpSocket *udpsocket;
 };
 #endif // NET_CLIENT_H

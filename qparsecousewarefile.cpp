@@ -138,6 +138,10 @@ void QParseCousewareFile::PutCousewareListToHash(const QJsonValue &childValue)
     {
         pInfo.m_tremble_position=chObject.value("tremble_position").toString();
     }
+    if(chObject.contains("CaseId"))
+    {
+        pInfo.m_CaseID=chObject.value("CaseId").toString();
+    }
     if(chObject.contains("sound_list"))
     {
          QJsonArray array=chObject.value("sound_list").toArray();

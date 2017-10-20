@@ -15,7 +15,13 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QDesktopWidget>
+//QString Global_DefaulFlashHL=QStringLiteral("/心脏听诊/听诊基础");
+//QString Global_DefaulFlashABT=QStringLiteral("/腹部触诊/基础知识");
+//QString Global_DefaulFlashECG=QStringLiteral("/心电图课件/心电图教学软件/临床心电学的基本知识");
+extern QCoursewareInfo Default;
+
 QString string111;
+
 void parentExpand(QTreeWidgetItem *item)
 {
     if(item->parent()!=Q_NULLPTR)
@@ -67,7 +73,6 @@ m_searchLineEdit::~m_searchLineEdit()
     this->deleteLater();
     //delete search_btn;
 }
-
 void m_searchLineEdit::onSearch()
 {
    QString str=m_pSearchLineEdit->text();
@@ -87,10 +92,6 @@ void m_searchLineEdit::onSearch()
 
 }
 
-
-
-
-
 /*****************主界面****************************/
 QTrainMainWindow::QTrainMainWindow(QWidget *parent) :
     QWidget(parent),
@@ -105,7 +106,7 @@ QTrainMainWindow::QTrainMainWindow(QWidget *parent) :
     is_soundPlay=false;
     is_allTeach=false;
     is_listen=false;
-    isloadflash=false;
+//    isloadflash=false;
     Synchronous=false;
     comboBtn=Q_NULLPTR;
 
@@ -120,6 +121,8 @@ QTrainMainWindow::QTrainMainWindow(QWidget *parent) :
     compareview->hide();
 
     loadqss();
+
+    OnFlashItemData(Default);
     connect(m_close_btn,SIGNAL(clicked(bool)),qApp,SLOT(quit()));
     connect(m_min_btn,SIGNAL(clicked()),this,SLOT(showMinimized()));
 
@@ -246,6 +249,9 @@ void QTrainMainWindow::windowInit()
     m_tab->setObjectName("m_tab");
     m_tab->setGeometry(0,70,124,669);
 
+    m_tab->setTypeFoucse(main_tab::CouswareFoucse,0);
+    baseTree.setCouseWare(qFlashTreeBase::HeartLungCourse);
+
     top_label=new QLabel(this);
     top_label->setObjectName("top_label");
     top_label->setGeometry(0,0,1366,25);
@@ -275,8 +281,8 @@ void QTrainMainWindow::windowInit()
     play_btn->setStyleSheet(QString("image:url(:/images/play_button_gray.png)"));
     play_btn->setEnabled(false);
     play_label=new QLabel(this);
-    play_label->setGeometry(1288,197,31,12);
-    play_label->setText(QStringLiteral("播 放"));
+    play_label->setGeometry(1288,197,31,20);
+    play_label->setText(QStringLiteral("播放"));
 
 
     listen_btn = new QPushButton(this);
@@ -286,8 +292,8 @@ void QTrainMainWindow::windowInit()
     listen_btn->setStyleSheet(QString("image:url(:/images/auscultation_button.png_gray.png)"));
     listen_btn->setEnabled(false);
     listen_label=new QLabel(this);
-    listen_label->setGeometry(1288,288,32,12);
-    listen_label->setText(QStringLiteral("听 诊"));
+    listen_label->setGeometry(1288,288,32,20);
+    listen_label->setText(QStringLiteral("听诊"));
 
     speak_btn=new QPushButton(this);
     speak_btn->setGeometry(1282,324,44,44);
@@ -296,7 +302,7 @@ void QTrainMainWindow::windowInit()
     speak_btn->setStyleSheet(QString("image:url(:/images/amplifyingauscultation_button.png_gray.png)"));
     speak_btn->setEnabled(false);
     speak_label=new QLabel(this);
-    speak_label->setGeometry(1280,378,48,12);
+    speak_label->setGeometry(1275,378,62,20);
     speak_label->setText(QStringLiteral("扩音听诊"));
 
     talk_btn=new QPushButton(this);
@@ -304,8 +310,8 @@ void QTrainMainWindow::windowInit()
     talk_btn->setGeometry(1282,416,44,44);
     talk_btn->setCursor(Qt::PointingHandCursor);
     talk_label=new QLabel(this);
-    talk_label->setGeometry(1288,469,32,12);
-    talk_label->setText(QStringLiteral("对 讲"));
+    talk_label->setGeometry(1288,469,32,20);
+    talk_label->setText(QStringLiteral("对讲"));
 
     search_label=new QLabel(this);
     search_label->setObjectName("search_label");
@@ -407,7 +413,7 @@ void QTrainMainWindow::loadflash(QString &flashpath)
     m_flashpath.clear();
     m_flashpath=flashpath;
     flash_widget->loadFlash(m_flashpath);
-    isloadflash=true;
+//    isloadflash=true;
     m_play=false;
 
 }
@@ -505,6 +511,10 @@ void QTrainMainWindow::doSearchWork(QString &str)
         }
         if(!str.isEmpty()&&str!=QString("RESET"))
         {
+            for(int i=0;i<baseTree.topLevelItemCount();i++)
+            {
+                baseTree.topLevelItem(i)->setExpanded(false);
+            }
             string111=str;
             QTreeWidgetItemIterator it(basetree);
             while (*it)
@@ -554,20 +564,20 @@ void QTrainMainWindow::ChangeTabStyleSheet(int index)
         }
         if(index==1||index==2)
         {
-             if(isloadflash)
-             {
+//             if(isloadflash)
+//             {
                 flash_widget->PausePlay();
-                loadflash(QString("reset"));
-                isloadflash=false;
-             }
-             if(!web_PPt->isHidden())
-             {
-                web_PPt->hide();
-             }
-             if(!flash_widget->isHidden())
-             {
-                flash_widget->hide();
-             }
+//                loadflash(QString("reset"));
+//                isloadflash=false;
+//             }
+//             if(!web_PPt->isHidden())
+//             {
+//                web_PPt->hide();
+//             }
+//             if(!flash_widget->isHidden())
+//             {
+//                flash_widget->hide();
+//             }
              listen_btn->setStyleSheet(QString("image:url(:/images/auscultation_button.png"));
              speak_btn->setStyleSheet(QString("image:url(:/images/amplifyingauscultation_button.png)"));
              listen_btn->setEnabled(true);
@@ -579,22 +589,67 @@ void QTrainMainWindow::ChangeTabStyleSheet(int index)
 
 void QTrainMainWindow::CourseWareTab()
 {
-    m_tab->setTypeFoucse(main_tab::CouswareFoucse,ID_HS_CWARE);
-    baseTree.setCouseWare(qFlashTreeBase::HeartLungCourse);
+    if(CurrentBtnIndex==ID_HS_CWARE||CurrentBtnIndex==-1)
+    {
+        baseTree.setCouseWare(qFlashTreeBase::HeartLungCourse);
+    }
+    if(CurrentBtnIndex==ID_ABT_CWARE)
+    {
+        baseTree.setCouseWare(qFlashTreeBase::ABTCourse);
+    }
+    if(CurrentBtnIndex==ID_ECG_CWARE)
+    {
+        baseTree.setCouseWare(qFlashTreeBase::ECGCourse);
+    }
+
 }
 void QTrainMainWindow::CaseTab()
 {
-    m_tab->setTypeFoucse(main_tab::CaseFoucse,ID_HS_ALL_CASE);
-    baseTree.setCaseTree(qFlashTreeBase::CORDIOPHONY);
+    QString CaseIdMsg=baseTree.CaseIDMsg();
+    if(CaseIdMsg.isEmpty())
+    {
+        m_tab->setTypeFoucse(main_tab::CaseFoucse,0);
+        baseTree.setCaseTree(qFlashTreeBase::CORDIOPHONY);
+        baseTree.expandAll();
+    }
+    QString Type=CaseIdMsg.section(":",0,0);
+    QString CaseId=CaseIdMsg.section(":",1,1);
+    if(Type.section("/",1,1)==QStringLiteral("心脏听诊"))
+    {
+        m_tab->setTypeFoucse(main_tab::CaseFoucse,0);
+        baseTree.setCaseTree(qFlashTreeBase::CORDIOPHONY);
+        if(CaseId=="0"||CaseId.isEmpty())
+        {
+            return;
+        }
+        else
+        {
+           baseTree.setCurrentItem(baseTree.GetCaseItem(CaseId.toInt()));
+        }
+
+    }
+    if(Type.section("/",1,1)==QStringLiteral("肺部听诊"))
+    {
+        m_tab->setTypeFoucse(main_tab::CaseFoucse,1);
+        baseTree.setCaseTree(qFlashTreeBase::LUNGAUSCULTATION);
+        if(CaseId=="0"||CaseId.isEmpty())
+        {
+            return;
+        }
+        else
+        {
+           baseTree.setCurrentItem(baseTree.GetCaseItem(CaseId.toInt()));
+        }
+    }
 }
 void QTrainMainWindow::DiffTab()
 {
     m_DiffsoundInfo[0].clear();
     m_DiffsoundInfo[1].clear();
-    compareview->widgetinit();
-    compareview->show();
+//    compareview->widgetinit();
+//    compareview->show();
     ui->IdentifyauscultationBtn->show();
-    m_tab->setTypeFoucse(main_tab::DiffFoucse,ID_HS_AUT);
+    m_tab->setTypeFoucse(main_tab::DiffFoucse,0);
     baseTree.setDiffTree(qFlashTreeBase::HEARTDIFF);
 }
 
@@ -626,13 +681,14 @@ void QTrainMainWindow::onTabchange(int index)
 /************tab中按钮点击信号***************/
 void QTrainMainWindow::onTabBtnClicked(int index)
 {
-      CurrentBtnIndex=index;
-    /****************心肺听诊课件**************/
-       if(index==ID_HS_CWARE)
+      if(index==ID_HS_CWARE||index==ID_ABT_CWARE||index==ID_ECG_CWARE)
+      {
+          CurrentBtnIndex=index;
+      }
+      if(index==ID_HS_CWARE)
        {
            baseTree.setCouseWare(qFlashTreeBase::HeartLungCourse);
        }
-    /*********腹部听诊课件*********/
        if(index==ID_ABT_CWARE)
        {
            touchTrainBtn->show();
@@ -641,7 +697,6 @@ void QTrainMainWindow::onTabBtnClicked(int index)
            return;
        }
 
-    /***********心电图课件*******************/
        if(index==ID_ECG_CWARE)
        {
             baseTree.setCouseWare(qFlashTreeBase::ECGCourse);
@@ -690,22 +745,23 @@ void QTrainMainWindow::onTabBtnClicked(int index)
 
 /**************肠鸣音听诊病例*********************/
 
-   if(index==ID_BBGS_ALL_CASE||index==ID_BBGS_ADULT_CASE||index==ID_BBGS_CHILD_CASE||index==ID_BBGS_OLD_CASE)
+   if(index==ID_BBGS_ALL_CASE||index==ID_BBGS_ADULT_CASE)
    {
          baseTree.setCaseTree(qFlashTreeBase::Borborygmus);
+         baseTree.m_ShowHiden(1);
    }
-   if(index==ID_BBGS_ADULT_CASE)
-   {
-      baseTree.m_ShowHiden(1);
-   }
-   if(index==ID_BBGS_CHILD_CASE)
-   {
-      baseTree.m_ShowHiden(2);
-   }
-   if(index==ID_BBGS_OLD_CASE)
-   {
-      baseTree.m_ShowHiden(0);
-   }
+//   if(index==ID_BBGS_ADULT_CASE)
+//   {
+//      baseTree.m_ShowHiden(1);
+//   }
+//   if(index==ID_BBGS_CHILD_CASE)
+//   {
+//      baseTree.m_ShowHiden(2);
+//   }
+//   if(index==ID_BBGS_OLD_CASE)
+//   {
+//      baseTree.m_ShowHiden(0);
+//   }
 
 
 //-----------------鉴别听诊
@@ -715,10 +771,14 @@ void QTrainMainWindow::onTabBtnClicked(int index)
    }
    if(index==ID_HS_AUT)
    {
+       compareview->widgetinit();
+       compareview->hide();
         baseTree.setDiffTree(qFlashTreeBase::HEARTDIFF);
    }
    if(index==ID_BS_AUT)
    {
+       compareview->widgetinit();
+       compareview->show();
        baseTree.setDiffTree(qFlashTreeBase::BREATHDIFF);
    }
 
@@ -731,7 +791,6 @@ void QTrainMainWindow::OnFlashItemData(QCoursewareInfo &info)
         qDebug()<<__FUNCTION__<<"no flash";
         return;
     }
-
     if(info.m_sound_list.isEmpty())
     {
         listen_btn->setStyleSheet(QString("image:url(:/images/auscultation_button.png_gray.png)"));
@@ -747,7 +806,6 @@ void QTrainMainWindow::OnFlashItemData(QCoursewareInfo &info)
         speak_btn->setEnabled(true);
         is_soundPlay=false;
     }
-
     play_btn->setStyleSheet(QString("image:url(:/images/play_button.png)"));
     play_btn->setEnabled(true);
    if(CurrentBtnIndex==ID_ECG_CWARE)
@@ -772,12 +830,31 @@ void QTrainMainWindow::OnFlashItemData(QCoursewareInfo &info)
    {
        web_PPt->hide();
    }
+   QString type=info.m_strTreeDir.section("/",0,0);
+//   if(type==QStringLiteral("心脏听诊")||type==QStringLiteral("肺部听诊"))
+//   {
+//       Global_DefaulFlashHL=info.m_strTreeDir;
+//   }
+//   if(type==QStringLiteral("腹部触诊"))
+//   {
+//       Global_DefaulFlashABT=info.m_strTreeDir;
+//   }
+//   if(type==QStringLiteral("心电图课件"))
+//   {
+//       Global_DefaulFlashECG=info.m_strTreeDir;
+//   }
    QString path=QString(QStringLiteral("您所在的位置:%1")).arg(info.m_strTreeDir);
    setPathshow(path);
    int count=info.m_strTreeDir.count(QString("/"));
-   QString str=QString("file:///")+QCoreApplication::applicationDirPath()+QString("/")+QString("Resource")+info.m_strTreeDir.section("/",0,count-1)+QString("/")+info.m_strFlash;
+   QString str=QString("file:///")+QCoreApplication::applicationDirPath()
+           +QString("/")+QString("Resource")+info.m_strTreeDir.section("/",0,count-1)+QString("/")+info.m_strFlash;
    qDebug()<<str;
    loadflash(str);
+
+   if(info.m_sound_list.isEmpty())
+   {
+       return;
+   }
    m_nState = 0;
    m_pSoundControl->LoadSoundConfigue(info.m_sound_list,info.m_tremble_position,info.m_defalut_sound);//初始化扩音听诊信息
 }
@@ -825,10 +902,6 @@ void QTrainMainWindow::setPathshow(QString &path)
 
 void QTrainMainWindow::m_show()
 {
-
-       baseTree.setDiffTree(qFlashTreeBase::HEARTDIFF);
-       m_tab->setTypeFoucse(main_tab::DiffFoucse,0);
-       m_tab->setCurrentIndex(2);
        QDesktopWidget* desktop =qApp->desktop();
        this->move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
        this->show();
@@ -1149,15 +1222,15 @@ void QTrainMainWindow::ALLTeachLocalFlash(QString &FlashName)
    baseTree.setCurrentItem(item);
    baseTree.doItemClicked(item,0);
 }
+
 void QTrainMainWindow::ALLTeachCase(QString &ID)
 {
-
-//    qDebug()<<__FUNCTION__<<"++++++++++++++++++++++++++++++++"<<ID;
-    int colum=ID.section(":",0,0).toInt();
-    int index=ID.section(":",1,1).toInt();
-    QTreeWidgetItem *item= baseTree.GetCaseItem(index);
-    baseTree.setCurrentItem(item);
-    baseTree.doItemClicked(item,colum);
+//    int colum=ID.section(":",0,0).toInt();
+//    int index=ID.section(":",1,1).toInt();
+//    QTreeWidgetItem *item= baseTree.GetCaseItem(index);
+//    baseTree.setCurrentItem(item);
+//    baseTree.doItemClicked(item,colum);
+    OnCaseItemData(baseTree.GetCaseItemData(ID.toInt()));
 }
 void QTrainMainWindow::dissconnectedFromTeachComputer()
 {
@@ -1192,11 +1265,7 @@ void QTrainMainWindow::InitComm()
 /****************主界面事件函数********************/
 void QTrainMainWindow::mousePressEvent (QMouseEvent *event)
 {
-   if(Synchronous)
-   {
-       QMessageBox::information(this,QStringLiteral("操作提示"),QStringLiteral("当前处于同步教学状态,无法进行其他操作"),QMessageBox::Yes);
-       return;
-   }
+   systemView->close();
    this->xOffset = event->globalPos().rx() - this->pos().rx();
    this->yOffset = event->globalPos().ry() - this->pos().ry();
 }

@@ -5,24 +5,41 @@
 #include <QMessageBox>
 #include <QtCore>
 #include <QSettings>
+
 #include "Windows.h"
+
+/*
+ *
+ *
+ * socket = new QUdpSocket(this);
+    if(socket->bind(QHostAddress::AnyIPv4, 250000, QUdpSocket::ShareAddress))
+    {
+        //        //QHostAddress("224.1.1.3"), 250000
+
+        qDebug()<<socket->errorString();
+        //设置回环
+        socket->setSocketOption(QAbstractSocket::MulticastLoopbackOption, 0);
+        socket->joinMulticastGroup(QHostAddress("224.1.1.3"));//加入组播地址
+    }
+ */
+
+
+
+QHostAddress mcast_addr("224.0.0.17");
 net_client::net_client(QObject *parent) :
     QObject(parent)
 {
-    /***********查看教师机是否在线*************/
-   udpsocket=new QUdpSocket;
-   udpsocket->bind(QHostAddress::AnyIPv4, 1066, QUdpSocket::ReuseAddressHint);
-   QHostAddress mcast_addr("224.0.0.17");
-  udpsocket->joinMulticastGroup(mcast_addr);//这句是关键，加入组播地址
-
-  connect(udpsocket,SIGNAL(readyRead()),this,SLOT(onUdpSocket()));
-
-
+//    /***********查看教师机是否在线*************/
+//   udpsocket=new QUdpSocket;
+//   if(udpsocket->bind(QHostAddress::AnyIPv4, 1066,QUdpSocket::ShareAddress))
+//   {
+//         udpsocket->joinMulticastGroup(mcast_addr);//这句是关键，加入组播地址
+//   }
+//   connect(udpsocket,SIGNAL(readyRead()),this,SLOT(onUdpSocket()));
 
 /*****************************/
   net_client_socket=new QTcpSocket();
   connect(net_client_socket,SIGNAL(readyRead()),this,SLOT(recv_msg()));
-  connect(net_client_socket,SIGNAL(connected()),this,SLOT(onconnected()));
   connect(net_client_socket,SIGNAL(disconnected()),this,SLOT(ondisconnected()));
   connect(net_client_socket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(error(QAbstractSocket::SocketError)));
 }
@@ -31,31 +48,40 @@ net_client::~net_client()
 {
    net_client_socket->abort();
    net_client_socket->deleteLater();
-   udpsocket->deleteLater();
+//   udpsocket->deleteLater();
    this->deleteLater();
 }
-
+/*
 void net_client::onUdpSocket()
 {
 
-    if(net_client_socket->state()==QAbstractSocket::HostLookupState||QAbstractSocket::ConnectedState||QAbstractSocket::ConnectingState)
-    {
-        net_client_socket->close();
-    }
-    QSettings *readconfig=new QSettings(APPPATH,QSettings::IniFormat);
-    QString localhostName=readconfig->value("Client/ServerIP").toString();
-    QHostInfo info=QHostInfo::fromName(localhostName);
-    foreach(QHostAddress address,info.addresses())
-    {
-      if(address.protocol()==QAbstractSocket::IPv4Protocol)
-          {
-            qDebug()<<__FUNCTION__<<address.toString();
-            connect_to_server(address.toString(),666666);
-          }
-    }
-    delete readconfig;
-}
 
+      QByteArray aa=udpsocket->readAll();
+
+      qDebug()<<__FUNCTION__<<aa;
+//    if(net_client_socket->state()==QAbstractSocket::HostLookupState||QAbstractSocket::ConnectedState||QAbstractSocket::ConnectingState)
+//    {
+//        qDebug()<<__FUNCTION__<<QStringLiteral("正在尝试连接.........");
+//        return;
+//    }
+//    if(net_client_socket->state()==QAbstractSocket::UnconnectedState)
+//    {
+//        qDebug()<<__FUNCTION__<<QStringLiteral("正在重新连接...........");
+//        QSettings *readconfig=new QSettings(APPPATH,QSettings::IniFormat);
+//        QString localhostName=readconfig->value("Client/ServerIP").toString();
+//        QHostInfo info=QHostInfo::fromName(localhostName);
+//        foreach(QHostAddress address,info.addresses())
+//        {
+//          if(address.protocol()==QAbstractSocket::IPv4Protocol)
+//              {
+//                qDebug()<<__FUNCTION__<<address.toString();
+//                connect_to_server(address.toString(),666666);
+//              }
+//        }
+//        delete readconfig;
+//    }
+}
+*/
 
 void net_client::connect_to_server(QString ip, qint16 port)
 {
@@ -65,19 +91,19 @@ void net_client::connect_to_server(QString ip, qint16 port)
 
 void net_client::onconnected()
 {
-    emit signal_socket_state(net_client_state::CONNECTED);
+//    emit signal_socket_state(net_client_state::CONNECTED);
 }
+
 void net_client::ondisconnected()
 {
-    emit DISSCONNECTED();
-    net_client_socket->abort();
+//    emit DISSCONNECTED();
+//    net_client_socket->close();
 }
 
 void net_client::send_msg(QByteArray &msg)
 {
   net_client_socket->write(msg);
 }
-/** 接收信息*/
 void net_client::recv_msg()
 {
   QByteArray recvbytes=net_client_socket->readAll();
@@ -208,14 +234,15 @@ void net_client::manager_msg(QByteArray &recv)
              if(cmd=="CLIENTCONNECTEDSUCCESS")
              {
                 net_client_socket->write(TellServerDeskID());
-                QMessageBox::information(NULL,QStringLiteral("连接提示"),QStringLiteral("连接教师机成功"),QMessageBox::Yes);
+                if(data.section(":",2,2)==QString("Synchronous"))
+                {
+                    startAllTeach(true);
+                }
                 emit CONNECTEDSUCCESS();
-                emit ALLTeacherPatter(data);
+                emit ALLTeacherPatter(data.section(":",0,1));
                 return;
               }
          }
-
-
          if(type==QString("talk"))
          {
             emit ALLTeachTalk(object.value("cmd").toBool());
@@ -230,10 +257,14 @@ void net_client::manager_msg(QByteArray &recv)
         qDebug()<<__FUNCTION__<<simp_json_error.errorString();
     }
 }
-/***********连接错误信息***********/
+
+
+
 void net_client::error(QAbstractSocket::SocketError errorstring)
 {
     Q_UNUSED(errorstring);
+    //net_client_socket->close();
+    emit DISSCONNECTED();
 #if 0
    if(errorstring==QAbstractSocket::ConnectionRefusedError)
    {

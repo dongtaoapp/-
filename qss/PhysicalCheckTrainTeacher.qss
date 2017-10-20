@@ -152,6 +152,9 @@ QWidget#auscultation_widget,#case_widget,#courseware_widget{
 QWidget#QTrainMainWindow{
     background-color:white;
 }
+QWidget#QPalpationpracticeTip{
+    border-style:solid;
+}
 QTreeWidget{
         border-style:solid;
         border-right:1px solid #ebedee;

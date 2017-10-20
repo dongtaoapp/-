@@ -16,6 +16,8 @@ public:
     ~QPalpationpracticeTip();
     void SetTitle(QString &Title);
     void m_exec();
+protected:
+    void paintEvent(QPaintEvent *event);
 private:
     Ui::QPalpationpracticeTip *ui;
     QMovie *m_movie;

@@ -53,13 +53,13 @@ void courseware_widget::setBtnFoucse(int index)
     btnInit();
     switch(index)
     {
-    case 0:
+    case ID_HS_CWARE:
         ui->HT_btn->setStyleSheet(QString("image:url(:/images/clicked.png);border-style:solid;border-left:3px solid white"));
         break;
-    case 1:
+    case ID_ABT_CWARE:
         ui->abdomen_T_btn->setStyleSheet(QString("image:url(:/images/clicked.png);border-style:solid;border-left:3px solid white"));
         break;
-    case 2:
+    case ID_ECG_CWARE:
         ui->ECG_btn->setStyleSheet(QString("image:url(:/images/clicked.png);border-style:solid;border-left:3px solid white"));
         break;
     default:
